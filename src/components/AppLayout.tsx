@@ -3,8 +3,9 @@ import { BarChart3, Home, Plus, Settings, WalletCards } from 'lucide-react'
 
 const navigation = [
   { to: '/', label: 'Home', icon: Home, end: true },
-  { to: '/transactions', label: 'Transactions', icon: WalletCards },
   { to: '/analysis', label: 'Analysis', icon: BarChart3 },
+  { to: '/add', label: 'Add', icon: Plus, isAdd: true },
+  { to: '/accounts', label: 'Accounts', icon: WalletCards },
   { to: '/settings', label: 'Settings', icon: Settings },
 ]
 
@@ -20,7 +21,7 @@ export function AppLayout() {
       </header>
       <main><Outlet /></main>
       <nav className="bottom-navigation" aria-label="Primary navigation">
-        {navigation.map(({ to, label, icon: Icon, end }) => <NavLink key={to} to={to} end={end} className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}><Icon size={19} /><span>{label}</span></NavLink>)}
+        {navigation.map(({ to, label, icon: Icon, end, isAdd }) => <NavLink key={to} to={to} end={end} aria-label={label} className={({ isActive }) => isAdd ? 'nav-item nav-add-item' : isActive ? 'nav-item active' : 'nav-item'}><Icon size={isAdd ? 27 : 19} /><span>{label}</span></NavLink>)}
       </nav>
     </div>
   )
