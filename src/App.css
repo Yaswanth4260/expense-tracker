@@ -9,4 +9,23 @@
 .bottom-navigation { position: fixed; z-index: 10; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: repeat(4, 1fr); max-width: 720px; margin: 0 auto; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(0, 0, 0, .08); background: rgba(255, 255, 255, .9); backdrop-filter: blur(18px); }
 .nav-item { display: grid; place-items: center; gap: 5px; padding: 6px; color: #86868b; text-decoration: none; font-size: 11px; font-weight: 600; }
 .nav-item.active { color: #007aff; }
+.add-transaction-page { padding-bottom: 24px; }
+.page-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:18px 0 24px; }
+.page-heading h2 { margin:8px 0; font-size:34px; letter-spacing:-.06em; }
+.page-heading p:last-child { margin:0; color:#86868b; font-size:13px; line-height:1.5; }
+.text-button { border:0; background:transparent; color:#007aff; font-size:13px; font-weight:600; }
+.transaction-form { display:grid; gap:18px; padding:20px; border:1px solid #e5e5e7; border-radius:22px; background:#fff; box-shadow:0 8px 30px rgba(30,40,50,.06); }
+.transaction-form label, .transaction-form legend { display:grid; gap:8px; color:#1d1d1f; font-size:12px; font-weight:600; }
+.transaction-form fieldset { display:grid; gap:10px; margin:0; padding:0; border:0; }
+.transaction-form input, .transaction-form select, .transaction-form textarea { width:100%; padding:12px; border:1px solid #d9d9de; border-radius:11px; background:#fbfbfc; outline:0; font-size:14px; }
+.transaction-form input:focus, .transaction-form select:focus, .transaction-form textarea:focus { border-color:#007aff; box-shadow:0 0 0 3px rgba(0,122,255,.12); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.transaction-form .type-picker { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.type-option { padding:11px 8px; color:#86868b; border:1px solid #e1e1e5; border-radius:11px; background:#fbfbfc; font-size:12px; font-weight:600; }
+.type-option.selected { color:#007aff; border-color:#007aff; background:#e8f2ff; }
+.transaction-form .primary-button { width:100%; border:0; }
+.transaction-form .primary-button:disabled { cursor:not-allowed; opacity:.55; }
+.optional { color:#86868b; font-weight:400; }
+.attachment-name { margin:0; color:#248a5b; font-size:12px; }
+.form-error { margin:0; padding:11px 12px; color:#b42318; border-radius:10px; background:#fff0ef; font-size:12px; }
 @media (min-width: 721px) { body { padding: 24px 0; } .bottom-navigation { border: 1px solid rgba(0, 0, 0, .08); border-radius: 18px 18px 0 0; } }

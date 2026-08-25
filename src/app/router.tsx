@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { AppLayout } from '../components/AppLayout'
-import { AccountsPage, AddPage, AnalysisPage, BudgetPage, HomePage, SettingsPage, TransactionDetailsPage, TransactionsPage } from '../pages/PlaceholderPages'
+import { AccountsPage, AnalysisPage, BudgetPage, HomePage, SettingsPage, TransactionDetailsPage, TransactionsPage } from '../pages/PlaceholderPages'
+import { AddTransactionPage } from '../pages/AddTransactionPage'
 
 export const router = createBrowserRouter([
   {
@@ -8,7 +9,7 @@ export const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: 'add', element: <AddPage /> },
+      { path: 'add', element: <AddTransactionPage /> },
       { path: 'transactions', element: <TransactionsPage /> },
       { path: 'transactions/:id', element: <TransactionDetailsPage /> },
       { path: 'analysis', element: <AnalysisPage /> },
