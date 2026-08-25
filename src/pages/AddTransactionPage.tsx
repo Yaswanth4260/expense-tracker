@@ -2,8 +2,8 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAccounts } from '../db/repositories/accountRepository'
-import { createTransaction } from '../db/repositories/transactionRepository'
-import type { Attachment, PaymentMode, TransactionType } from '../types/transaction'
+import { createTransaction, updateTransaction } from '../db/repositories/transactionRepository'
+import type { Attachment, PaymentMode, Transaction, TransactionType } from '../types/transaction'
 
 const transactionTypes: TransactionType[] = ['expense', 'income', 'transfer']
 const paymentModes: PaymentMode[] = ['cash', 'upi', 'card', 'net-banking', 'other']
@@ -22,11 +22,13 @@ function parseHashtags(value: string) {
   return value.split(/[\s,]+/).map((tag) => tag.trim().replace(/^#/, '')).filter(Boolean).map((tag) => `#${tag}`)
 }
 
-export function AddTransactionPage() {
+type Props = { transaction?: Transaction; onSaved?: () => void; onCancel?: () => void }
+
+export function AddTransactionPage({ transaction, onSaved, onCancel }: Props) {
   const navigate = useNavigate()
   const accounts = useLiveQuery(getAccounts, [])
-  const [transactionType, setTransactionType] = useState<TransactionType>('expense')
-  const [attachment, setAttachment] = useState<Attachment>()
+  const [transactionType, setTransactionType] = useState<TransactionType>(transaction?.type || 'expense')
+  const [attachment, setAttachment] = useState<Attachment | undefined>(transaction?.attachment)
   const [error, setError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
 
@@ -52,8 +54,11 @@ export function AddTransactionPage() {
     setIsSaving(true)
     const now = new Date().toISOString()
     try {
-      await createTransaction({ type: transactionType, amount, category, accountId, paymentMode, date, time, note, hashtags, attachment, createdAt: now, updatedAt: now })
-      navigate('/')
+      const values = { type: transactionType, amount, category, accountId, paymentMode, date, time, note, hashtags, attachment, createdAt: transaction?.createdAt || now, updatedAt: now }
+      if (transaction?.id) await updateTransaction(transaction.id, values)
+      else await createTransaction(values)
+      if (onSaved) onSaved()
+      else navigate('/')
     } catch { setError('The transaction could not be saved. Please try again.'); setIsSaving(false) }
   }
 
@@ -63,15 +68,15 @@ export function AddTransactionPage() {
   }
 
   return <section className="add-transaction-page">
-    <div className="page-heading"><div><p className="eyebrow">NEW RECORD</p><h2>Add transaction</h2><p>Record money in, money out, or a transfer.</p></div><button className="text-button" type="button" onClick={() => navigate('/')}>Cancel</button></div>
+    <div className="page-heading"><div><p className="eyebrow">{transaction ? 'EDIT RECORD' : 'NEW RECORD'}</p><h2>{transaction ? 'Edit transaction' : 'Add transaction'}</h2><p>Record money in, money out, or a transfer.</p></div><button className="text-button" type="button" onClick={onCancel || (() => navigate('/'))}>Cancel</button></div>
     <form className="transaction-form" onSubmit={submit} noValidate>
       <fieldset><legend>Transaction type</legend><div className="type-picker">{transactionTypes.map((type) => <button className={transactionType === type ? 'type-option selected' : 'type-option'} type="button" key={type} onClick={() => setTransactionType(type)}>{type[0].toUpperCase() + type.slice(1)}</button>)}</div></fieldset>
-      <label>Amount<input name="amount" type="number" min="0.01" step="0.01" inputMode="decimal" placeholder="0.00" required /></label>
-      <div className="form-row"><label>Category<input name="category" placeholder="Food, salary, rent..." required /></label><label>Account<select name="accountId" defaultValue="" required><option value="" disabled>{accounts?.length ? 'Choose account' : 'Loading accounts...'}</option>{accounts?.map((account) => <option value={account.id} key={account.id}>{account.name}</option>)}</select></label></div>
-      <div className="form-row"><label>Date<input name="date" type="date" defaultValue={localDate()} required /></label><label>Time<input name="time" type="time" defaultValue={localTime()} required /></label></div>
-      <label>Payment mode<select name="paymentMode" defaultValue="cash">{paymentModes.map((mode) => <option value={mode} key={mode}>{mode.replace('-', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase())}</option>)}</select></label>
-      <label>Note<textarea name="note" rows={3} placeholder="Add a note (optional)" /></label>
-      <label>Hashtags<input name="hashtags" placeholder="#work #travel (optional)" /></label>
+      <label>Amount<input name="amount" type="number" min="0.01" step="0.01" inputMode="decimal" defaultValue={transaction?.amount} placeholder="0.00" required /></label>
+      <div className="form-row"><label>Category<input name="category" defaultValue={transaction?.category} placeholder="Food, salary, rent..." required /></label><label>Account<select name="accountId" defaultValue={transaction?.accountId || ''} required><option value="" disabled>{accounts?.length ? 'Choose account' : 'Loading accounts...'}</option>{accounts?.map((account) => <option value={account.id} key={account.id}>{account.name}</option>)}</select></label></div>
+      <div className="form-row"><label>Date<input name="date" type="date" defaultValue={transaction?.date || localDate()} required /></label><label>Time<input name="time" type="time" defaultValue={transaction?.time || localTime()} required /></label></div>
+      <label>Payment mode<select name="paymentMode" defaultValue={transaction?.paymentMode || 'cash'}>{paymentModes.map((mode) => <option value={mode} key={mode}>{mode.replace('-', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase())}</option>)}</select></label>
+      <label>Note<textarea name="note" rows={3} defaultValue={transaction?.note} placeholder="Add a note (optional)" /></label>
+      <label>Hashtags<input name="hashtags" defaultValue={transaction?.hashtags.join(' ')} placeholder="#work #travel (optional)" /></label>
       <label>Attachment <span className="optional">(optional)</span><input type="file" onChange={selectAttachment} /></label>
       {attachment && <p className="attachment-name">Attached: {attachment.name}</p>}
       {error && <p className="form-error" role="alert">{error}</p>}
@@ -79,3 +84,4 @@ export function AddTransactionPage() {
     </form>
   </section>
 }
+

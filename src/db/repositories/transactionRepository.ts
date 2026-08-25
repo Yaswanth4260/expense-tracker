@@ -2,7 +2,11 @@ import { database } from '../database'
 import type { Transaction } from '../../types/transaction'
 
 export function getTransactions() {
-  return database.transactions.orderBy('date').reverse().toArray()
+  return database.transactions.toArray().then((transactions) => transactions.sort((first, second) => {
+    const firstDate = `${first.date}T${first.time}`
+    const secondDate = `${second.date}T${second.time}`
+    return secondDate.localeCompare(firstDate) || second.createdAt.localeCompare(first.createdAt)
+  }))
 }
 
 export function getTransaction(id: number) {
