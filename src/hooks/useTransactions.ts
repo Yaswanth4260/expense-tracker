@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import { listTransactions } from '../services/transactionService'
+import { getTransactions } from '../db/repositories/transactionRepository'
 
 export function useTransactions() {
-  return useLiveQuery(listTransactions, [])
+  return useLiveQuery(getTransactions, [])
 }
