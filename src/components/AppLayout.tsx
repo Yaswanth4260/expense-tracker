@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { BarChart3, Home, Plus, Settings, WalletCards } from 'lucide-react'
+import { OfflineIndicator } from './OfflineIndicator'
 
 const navigation = [
   { to: '/', label: 'Home', icon: Home, end: true },
@@ -12,6 +13,7 @@ const navigation = [
 export function AppLayout() {
   return (
     <div className="app-shell">
+      <OfflineIndicator />
       <header className="app-header">
         <div>
           <p className="eyebrow">EXPENSE TRACKER</p>

@@ -54,4 +54,23 @@ html[data-theme='dark'] body {
 body { min-width: 320px; margin: 0; background: var(--color-background); }
 button, input, select, textarea { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
-#root { min-height: 100svh; }
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+html {
+  min-height: 100svh;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  background: var(--color-background);
+  overscroll-behavior-y: none;
+}
+
+#root {
+  min-height: 100svh;
+}

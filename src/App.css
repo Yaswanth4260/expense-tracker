@@ -1,4 +1,10 @@
 .app-shell { min-height: 100svh; max-width: 720px; margin: 0 auto; padding: var(--space-6) var(--space-5) calc(var(--navigation-height) + var(--space-1)); background: var(--color-background); }
+.app-shell main {
+  padding-bottom: calc(
+    var(--navigation-height) +
+    env(safe-area-inset-bottom)
+  );
+}
 .app-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0 28px; }
 .app-header h1 { margin: 0; font-size: 26px; letter-spacing: -.05em; }
 .eyebrow { margin: 0 0 6px; color: #86868b; font-size: 10px; font-weight: 700; letter-spacing: .12em; }
@@ -1335,4 +1341,22 @@ html[data-theme='dark'] .settings-feedback.error {
   margin-top: 13px;
   color: var(--color-text-secondary);
   font-size: 9px;
+}
+.offline-indicator {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 13px;
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  box-shadow: var(--shadow-card);
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 600;
 }
