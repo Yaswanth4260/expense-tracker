@@ -4,6 +4,7 @@ import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  base: '/expense-tracker/',
   plugins: [
     react(),
 
@@ -28,9 +29,8 @@ export default defineConfig({
         background_color: '#f4f5f7',
         display: 'standalone',
         orientation: 'portrait',
-        scope: '/',
-        start_url: '/',
-        id: '/',
+        scope: '/expense-tracker/',
+        start_url: '/expense-tracker/',
         categories: ['finance', 'productivity'],
         lang: 'en',
         icons: [
