@@ -111,3 +111,285 @@
 .recent-copy { display: grid; flex: 1; gap: 5px; min-width: 0; }.recent-copy strong { overflow: hidden; text-overflow: ellipsis; font-size: 13px; white-space: nowrap; }.recent-copy span { color: var(--color-text-secondary); font-size: 10px; }.recent-amount { display: grid; justify-items: end; gap: 5px; }.recent-amount strong { font: 500 12px var(--font-mono); white-space: nowrap; }.recent-amount span { color: var(--color-text-secondary); font-size: 10px; }.income-amount { color: #248a5b; }.expense-amount { color: #b42318; }
 .budget-card { display: grid; justify-items: center; gap: 8px; min-height: 240px; padding: var(--space-5); }.budget-card .ui-segmented-control { justify-self: center; }.budget-set-state { display: grid; justify-items: center; gap: 5px; padding: 22px 8px 8px; text-align: center; }.budget-set-state h3 { margin: 0; font: 500 25px var(--font-mono); }.budget-set-state p { margin: 0; color: var(--color-text-secondary); font-size: 12px; }.budget-card .ui-empty-state { padding: 22px 8px 8px; }.budget-card .ui-empty-state h3 { font-size: 18px; }
 @media (max-width: 430px) { .home-dashboard .ui-page-header h2 { font-size: 29px; }.profile-strip { gap: 9px; }.upgrade-pill { padding-inline: 9px; }.cash-flow-card { padding: 20px; }.flow-columns { gap: 12px; }.recent-card { padding-inline: 15px; } }
+
+/* Accounts CSS */
+.accounts-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  padding-bottom: calc(var(--navigation-height) + var(--space-10));
+}
+
+.accounts-page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.accounts-page-header h2 {
+  margin: var(--space-1) 0 0;
+  font-size: clamp(30px, 8vw, 38px);
+  line-height: 1;
+}
+
+.accounts-add-button,
+.account-save-button,
+.accounts-empty-state button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  background: var(--color-text-primary);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.accounts-total-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.accounts-total-card span,
+.accounts-total-card p {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.accounts-total-card strong {
+  font-size: clamp(34px, 10vw, 48px);
+  line-height: 1.1;
+}
+
+.accounts-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.account-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.account-main {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: var(--space-3);
+}
+
+.account-icon {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  flex: 0 0 58px;
+  place-items: center;
+  border-radius: 20px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.account-information {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.account-information strong {
+  overflow: hidden;
+  font-size: 17px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-information span {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.account-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.account-actions > strong {
+  white-space: nowrap;
+  font-size: 17px;
+}
+
+.account-action-buttons {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.account-action-buttons button,
+.account-modal-header button {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 12px;
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.account-action-buttons button:last-child {
+  color: var(--color-danger);
+}
+
+.accounts-empty-state {
+  display: flex;
+  min-height: 240px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-8);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+
+.accounts-empty-state h3,
+.accounts-empty-state p {
+  margin: 0;
+}
+
+.accounts-empty-state p {
+  color: var(--color-text-secondary);
+}
+
+.account-modal-backdrop {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-4);
+  background: rgba(39, 55, 70, 0.35);
+}
+
+.account-modal {
+  width: min(100%, 560px);
+  margin: 0 auto;
+  padding: 24px;
+  border-radius: 30px;
+  background: var(--color-surface);
+  box-shadow: 0 20px 60px rgba(20, 30, 40, 0.2);
+}
+
+.account-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.account-modal-header h3 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.account-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.account-modal label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.account-modal input,
+.account-modal select {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  outline: none;
+  background: var(--color-surface-muted);
+  color: var(--color-text-primary);
+}
+
+.account-modal input:focus,
+.account-modal select:focus {
+  border-color: var(--color-accent);
+}
+
+.account-form-error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: 14px;
+}
+
+.account-form-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.account-cancel-button {
+  min-height: 50px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.account-save-button {
+  min-height: 50px;
+}
+
+@media (max-width: 370px) {
+  .accounts-page {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .accounts-page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .account-card {
+    padding: 16px;
+  }
+
+  .account-actions > strong {
+    font-size: 15px;
+  }
+}
