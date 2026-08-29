@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { AppLayout } from '../components/AppLayout'
-import { SettingsPage } from '../pages/PlaceholderPages'
+import { SettingsPage } from '../pages/SettingsPage'
 import { AddTransactionPage } from '../pages/AddTransactionPage'
 import { AccountsPage } from '../pages/AccountsPage'
 import { AnalysisPage } from '../pages/AnalysisPage'

@@ -32,6 +32,23 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
+html[data-theme='dark'] {
+  --color-background: #111214;
+  --color-surface: #1b1d20;
+  --color-surface-muted: #24272b;
+  --color-text-primary: #f2f3f5;
+  --color-text-secondary: #9da3ab;
+  --color-border: #30343a;
+  --color-accent: #6ea8ff;
+  --color-accent-soft: #1d2d46;
+  --color-danger: #e06a61;
+  --shadow-card: 0 8px 30px rgba(0, 0, 0, .25);
+  --shadow-floating: 0 -8px 30px rgba(0, 0, 0, .35);
+}
+
+html[data-theme='dark'] body {
+  background: var(--color-background);
+}
 
 * { box-sizing: border-box; }
 body { min-width: 320px; margin: 0; background: var(--color-background); }
