@@ -21,6 +21,7 @@ export default defineConfig({
       ],
 
       manifest: {
+        id: '/expense-tracker/',
         name: 'Expense Tracker',
         short_name: 'Expenses',
         description:
@@ -35,17 +36,19 @@ export default defineConfig({
         lang: 'en',
         icons: [
           {
-            src: '/icons/icon-192.png',
+            src: 'icons/icon-192.png',
             sizes: '192x192',
             type: 'image/png',
+            purpose: 'any',
           },
           {
-            src: '/icons/icon-512.png',
+            src: 'icons/icon-512.png',
             sizes: '512x512',
             type: 'image/png',
+            purpose: 'any',
           },
           {
-            src: '/icons/icon-512-maskable.png',
+            src: 'icons/icon-512-maskable.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable',
