@@ -7,14 +7,26 @@ import App from './App.tsx'
 import './styles/global.css'
 import './App.css'
 
-registerSW({
+const updateSW = registerSW({
   immediate: true,
+
+  onNeedRefresh() {
+    window.dispatchEvent(
+      new CustomEvent('pwa-update-available')
+    )
+  },
+
+  onOfflineReady() {
+    window.dispatchEvent(
+      new CustomEvent('pwa-offline-ready')
+    )
+  },
 })
 
 createRoot(
   document.getElementById('root')!,
 ).render(
   <StrictMode>
-    <App />
+    <App updateSW={updateSW}/>
   </StrictMode>,
 )
