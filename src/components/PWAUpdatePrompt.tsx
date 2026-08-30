@@ -1,64 +1,90 @@
-import { useEffect, useState } from 'react'
+import { useRegisterSW } from 'virtual:pwa-register/react'
 
-interface PWAUpdatePromptProps {
-  updateSW: (reloadPage?: boolean) => Promise<void>
-}
-
-export default function PWAUpdatePrompt({
-  updateSW,
-}: PWAUpdatePromptProps) {
-  const [updateAvailable, setUpdateAvailable] = useState(false)
-  const [updating, setUpdating] = useState(false)
-
-  useEffect(() => {
-    const handleUpdateAvailable = () => {
-      setUpdateAvailable(true)
-    }
-
-    window.addEventListener(
-      'pwa-update-available',
-      handleUpdateAvailable,
-    )
-
-    return () => {
-      window.removeEventListener(
-        'pwa-update-available',
-        handleUpdateAvailable,
+export default function PWAUpdatePrompt() {
+  const {
+    needRefresh: [needRefresh, setNeedRefresh],
+    offlineReady: [offlineReady, setOfflineReady],
+    updateServiceWorker,
+  } = useRegisterSW({
+    onRegisteredSW(swUrl, registration) {
+      console.log(
+        'PWA service worker registered:',
+        swUrl,
       )
-    }
-  }, [])
 
-  const handleUpdate = async () => {
-    setUpdating(true)
+      if (registration) {
+        console.log(
+          'PWA service worker registration:',
+          registration,
+        )
+      }
+    },
 
-    try {
-      await updateSW(true)
-    } catch {
-      window.location.reload()
-    }
+    onRegisterError(error) {
+      console.error(
+        'PWA service worker registration error:',
+        error,
+      )
+    },
+  })
+
+  const closePrompt = () => {
+    setNeedRefresh(false)
+    setOfflineReady(false)
   }
 
-  if (!updateAvailable) {
+  if (!needRefresh && !offlineReady) {
     return null
   }
 
   return (
-    <div className="pwa-update-prompt" role="status">
+    <div
+      className="pwa-update-prompt"
+      role="status"
+      aria-live="polite"
+    >
       <div className="pwa-update-content">
         <div>
-          <strong>Update available</strong>
+          <strong>
+            {needRefresh
+              ? 'Update available'
+              : 'Ready to use offline'}
+          </strong>
+
           <span>
-            A new version of Expense Tracker is ready.
+            {needRefresh
+              ? 'A new version of Expense Tracker is ready.'
+              : 'Expense Tracker is ready to work offline.'}
           </span>
         </div>
 
-        <button
-          type="button"
-          onClick={handleUpdate}
-          disabled={updating}
-        >
-          {updating ? 'Updating…' : 'Update'}
-        </button>
+        {needRefresh ? (
+          <div className="pwa-update-actions">
+            <button
+              type="button"
+              className="pwa-update-later"
+              onClick={closePrompt}
+            >
+              Later
+            </button>
+
+            <button
+              type="button"
+              className="pwa-update-button"
+              onClick={() => updateServiceWorker(true)}
+            >
+              Update
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="pwa-update-button"
+            onClick={closePrompt}
+          >
+            Got it
+          </button>
+        )}
       </div>
     </div>
   )
