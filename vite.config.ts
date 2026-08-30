@@ -82,13 +82,61 @@ export default defineConfig({
           {
             urlPattern: ({ request }) =>
               request.destination === 'document',
+
             handler: 'NetworkFirst',
+
             options: {
-              cacheName: 'pages',
+              cacheName: 'expense-tracker-pages',
+
               networkTimeoutSeconds: 3,
+
               expiration: {
                 maxEntries: 10,
               },
+
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+
+          {
+            urlPattern: ({ request }) =>
+              ['script', 'style', 'worker'].includes(
+                request.destination,
+              ),
+
+            handler: 'StaleWhileRevalidate',
+
+            options: {
+              cacheName: 'expense-tracker-static',
+
+              expiration: {
+                maxEntries: 50,
+              },
+
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+
+          {
+            urlPattern: ({ request }) =>
+              request.destination === 'image',
+
+            handler: 'CacheFirst',
+
+            options: {
+              cacheName: 'expense-tracker-images',
+
+              expiration: {
+                maxEntries: 50,
+
+                maxAgeSeconds:
+                  60 * 60 * 24 * 30,
+              },
+
               cacheableResponse: {
                 statuses: [0, 200],
               },
