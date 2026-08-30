@@ -54,6 +54,19 @@ export default defineConfig({
             purpose: 'maskable',
           },
         ],
+        screenshots: [
+          {
+            src: 'screenshots/home-mobile.png',
+            sizes: '390x844',
+            type: 'image/png',
+          },
+          {
+            src: 'screenshots/home-desktop.png',
+            sizes: '1440x900',
+            type: 'image/png',
+            form_factor: 'wide',
+          },
+        ],
       },
 
       workbox: {
