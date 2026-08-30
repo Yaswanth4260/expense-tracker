@@ -1,5 +1,19 @@
-.app-shell { min-height: 100svh; max-width: 720px; margin: 0 auto; padding: var(--space-6) var(--space-5) calc(var(--navigation-height) + var(--space-1)); background: var(--color-background); }
+.app-shell {
+  width: 100%;
+  min-height: 100svh;
+  max-width: 720px;
+  margin: 0 auto;
+  padding:
+    var(--space-6)
+    clamp(16px, 5vw, 24px)
+    calc(var(--navigation-height) + env(safe-area-inset-bottom) + 16px);
+  background: var(--color-background);
+  overflow-x: clip;
+}
+
 .app-shell main {
+  width: 100%;
+  min-width: 0;
   padding-bottom: calc(
     var(--navigation-height) +
     env(safe-area-inset-bottom)
@@ -12,10 +26,62 @@
 .placeholder-page { display: grid; min-height: 55svh; place-items: center; align-content: center; padding: 32px 16px; text-align: center; }
 .placeholder-page h2 { margin: 8px 0; font-size: 34px; letter-spacing: -.06em; }
 .placeholder-page p:last-child { max-width: 320px; margin: 0; color: #86868b; font-size: 14px; line-height: 1.6; }
-.bottom-navigation { position: fixed; z-index: 10; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: repeat(5, 1fr); max-width: 720px; height: var(--navigation-height); margin: 0 auto; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid var(--color-border); background: rgba(255, 255, 255, .96); box-shadow: var(--shadow-floating); backdrop-filter: blur(18px); }
-.nav-item { display: grid; place-items: center; gap: 5px; padding: 6px; color: #86868b; text-decoration: none; font-size: 11px; font-weight: 600; }
+.bottom-navigation {
+  position: fixed;
+  z-index: 10;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+
+  width: 100%;
+  max-width: 720px;
+  height: calc(
+    var(--navigation-height) +
+    env(safe-area-inset-bottom)
+  );
+
+  margin: 0 auto;
+
+  padding:
+    16px
+    16px
+    calc(16px + env(safe-area-inset-bottom));
+
+  border-top: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, .96);
+  box-shadow: var(--shadow-floating);
+  backdrop-filter: blur(18px);
+
+  overflow: visible;
+}
+.nav-item {
+  display: grid;
+  min-width: 0;
+  place-items: center;
+  gap: 5px;
+  padding: 6px 3px;
+  color: #86868b;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 600;
+  overflow: hidden;
+}
+
+.nav-item svg {
+  flex: 0 0 auto;
+}
+
+.nav-item span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .nav-item.active { color: #007aff; }
-.nav-add-item { align-self: start; width: 58px; height: 58px; margin: -27px auto 0; padding: 0; color: #fff; border: 6px solid #f5f5f7; border-radius: 50%; background: #007aff; box-shadow: 0 6px 18px rgba(0, 122, 255, .3); }
+.nav-add-item { align-self: start; width: 58px; height: 58px; min-width: 58px; max-width: 58px; margin: -27px auto 0; padding: 0; color: #fff; border: 6px solid #f5f5f7; border-radius: 50%; background: #007aff; box-shadow: 0 6px 18px rgba(0, 122, 255, .3); }
 .nav-add-item span { display: none; }
 .ui-card { border-radius: var(--radius-lg); background: var(--color-surface); box-shadow: var(--shadow-card); }
 .ui-page-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-4); padding: var(--space-6) 0; }
@@ -47,6 +113,20 @@
 .transaction-form input, .transaction-form select, .transaction-form textarea { width:100%; padding:12px; border:1px solid #d9d9de; border-radius:11px; background:#fbfbfc; outline:0; font-size:14px; }
 .transaction-form input:focus, .transaction-form select:focus, .transaction-form textarea:focus { border-color:#007aff; box-shadow:0 0 0 3px rgba(0,122,255,.12); }
 .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media (max-width: 359px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .transaction-form {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .transaction-form .type-picker {
+    grid-template-columns: 1fr;
+  }
+}
 .transaction-form .type-picker { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
 .type-option { padding:11px 8px; color:#86868b; border:1px solid #e1e1e5; border-radius:11px; background:#fbfbfc; font-size:12px; font-weight:600; }
 .type-option.selected { color:#007aff; border-color:#007aff; background:#e8f2ff; }
@@ -60,7 +140,8 @@
 .transaction-list-row { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:17px; color:#1d1d1f; border-bottom:1px solid #f0f0f2; text-decoration:none; }
 .transaction-list-row:last-child { border-bottom:0; }.transaction-list-row div { display:grid; gap:5px; min-width:0; }.transaction-list-row span { color:#86868b; font-size:11px; text-transform:capitalize; }.transaction-list-row>strong { font:500 13px 'DM Mono',monospace; white-space:nowrap; }
 .detail-card { padding:20px; border:1px solid #e5e5e7; border-radius:22px; background:#fff; box-shadow:0 8px 30px rgba(30,40,50,.06); }.detail-amount { padding-bottom:18px; border-bottom:1px solid #f0f0f2; }.detail-amount span { display:block; color:#86868b; font-size:11px; text-transform:capitalize; }.detail-amount strong { display:block; margin-top:8px; font:500 30px 'DM Mono',monospace; }.detail-card dl { margin:0; }.detail-card dl>div { display:flex; justify-content:space-between; gap:20px; padding:14px 0; border-bottom:1px solid #f0f0f2; font-size:13px; }.detail-card dt { color:#86868b; }.detail-card dd { margin:0; text-align:right; }.detail-actions { display:flex; align-items:center; gap:18px; margin-top:20px; }.danger-button { color:#b42318; }
-@media (min-width: 721px) { body { padding: 24px 0; } .bottom-navigation { border: 1px solid rgba(0, 0, 0, .08); border-radius: 18px 18px 0 0; } }
+@media (min-width: 721px) { body { padding: 24px 0; } 
+.bottom-navigation { border: 1px solid rgba(0, 0, 0, .08); border-radius: 18px 18px 0 0; } }
 
 .dashboard-page { padding-bottom: 24px; }
 .dashboard-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 18px 0 24px; }
@@ -301,11 +382,25 @@
 
 .account-modal {
   width: min(100%, 560px);
+  max-height: calc(100svh - 32px);
   margin: 0 auto;
   padding: 24px;
+  overflow-y: auto;
   border-radius: 30px;
   background: var(--color-surface);
   box-shadow: 0 20px 60px rgba(20, 30, 40, 0.2);
+}
+
+@media (max-width: 430px) {
+  .account-modal-backdrop {
+    padding: 10px;
+  }
+
+  .account-modal {
+    max-height: calc(100svh - 20px);
+    padding: 20px;
+    border-radius: 24px;
+  }
 }
 
 .account-modal-header {
@@ -603,10 +698,23 @@
 
 .budget-modal {
   width: min(100%, 520px);
+  max-height: calc(100svh - 32px);
   padding: 22px;
+  overflow-y: auto;
   border-radius: 25px 25px 20px 20px;
   background: var(--color-surface);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 430px) {
+  .budget-modal-backdrop {
+    padding: 10px;
+  }
+
+  .budget-modal {
+    max-height: calc(100svh - 20px);
+    padding: 20px;
+  }
 }
 
 .budget-modal-header {
@@ -735,7 +843,8 @@
 }
 
 .analysis-period-card .ui-segmented-control {
-  min-width: 390px;
+  width: 100%;
+  min-width: 0;
 }
 
 .analysis-summary-grid {
@@ -1082,23 +1191,30 @@
   font-size: 11px;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 359px) {
   .analysis-summary-grid {
-    gap: 7px;
+    grid-template-columns: 1fr;
   }
 
   .analysis-summary-card {
-    padding: 13px 11px;
+    padding: 14px;
   }
 
   .analysis-summary-card strong {
-    font-size: 13px;
+    font-size: 16px;
   }
 }
 
 @media (max-width: 430px) {
   .analysis-period-card .ui-segmented-control {
-    min-width: 360px;
+    width: 100%;
+  }
+
+  .analysis-period-card .ui-segmented-control button {
+    flex: 1;
+    min-width: 0;
+    padding-right: 10px;
+    padding-left: 10px;
   }
 
   .analysis-donut-area {
@@ -1359,4 +1475,35 @@ html[data-theme='dark'] .settings-feedback.error {
   transform: translateX(-50%);
   font-size: 10px;
   font-weight: 600;
+}
+
+/* =========================
+   RESPONSIVE SAFETY
+========================= */
+
+@media (max-width: 359px) {
+  .app-shell {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .bottom-navigation {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  .nav-item {
+    padding-right: 2px;
+    padding-left: 2px;
+    font-size: 10px;
+  }
+
+  .nav-add-item {
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+    max-width: 54px;
+    margin-top: -24px;
+    border-width: 5px;
+  }
 }
