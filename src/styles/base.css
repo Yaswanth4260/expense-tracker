@@ -1,0 +1,28 @@
+* { box-sizing: border-box; }
+button, input, select, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+html {
+  min-height: 100svh;
+}
+
+body {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100svh;
+  margin: 0;
+  background: var(--color-background);
+  overscroll-behavior-y: none;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  min-height: 100svh;
+  overflow-x: clip;
+}
