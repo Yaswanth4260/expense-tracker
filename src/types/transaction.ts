@@ -13,7 +13,10 @@ export type Transaction = {
   type: TransactionType
   amount: number
   category: string
+  subcategory?: string
   accountId: number
+  fromAccountId?: number
+  toAccountId?: number
   paymentMode: PaymentMode
   date: string
   time: string

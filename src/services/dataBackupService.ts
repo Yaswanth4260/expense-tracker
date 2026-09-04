@@ -37,7 +37,10 @@ function isTransaction(value: unknown): value is Transaction {
     ) &&
     isNumber(value.amount) &&
     isString(value.category) &&
+    (value.subcategory === undefined || isString(value.subcategory)) &&
     isNumber(value.accountId) &&
+    (value.fromAccountId === undefined || isNumber(value.fromAccountId)) &&
+    (value.toAccountId === undefined || isNumber(value.toAccountId)) &&
     ['cash', 'upi', 'card', 'net-banking', 'other'].includes(
       String(value.paymentMode),
     ) &&
@@ -178,6 +181,14 @@ export function validateBackup(
       throw new Error(
         `Transaction ${transaction.id ?? ''} references a missing account.`,
       )
+    }
+
+    if (transaction.fromAccountId !== undefined && !accountIdSet.has(transaction.fromAccountId)) {
+      throw new Error(`Transaction ${transaction.id ?? ''} references a missing source account.`)
+    }
+
+    if (transaction.toAccountId !== undefined && !accountIdSet.has(transaction.toAccountId)) {
+      throw new Error(`Transaction ${transaction.id ?? ''} references a missing destination account.`)
     }
   }
 

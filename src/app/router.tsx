@@ -8,6 +8,7 @@ import { BudgetPage } from '../pages/BudgetPage'
 import { HomePage } from '../pages/HomePage'
 import { TransactionDetailsPage } from '../pages/TransactionDetailsPage'
 import { TransactionsPage } from '../pages/TransactionsPage'
+import { CategoriesPage } from '../pages/CategoriesPage'
 
 export const router = createBrowserRouter([
   {
@@ -22,6 +23,7 @@ export const router = createBrowserRouter([
       { path: 'accounts', element: <AccountsPage /> },
       { path: 'budget', element: <BudgetPage /> },
       { path: 'settings', element: <SettingsPage /> },
+      { path: 'settings/categories', element: <CategoriesPage /> },
     ],
   },
 ],

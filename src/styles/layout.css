@@ -19,10 +19,7 @@
     env(safe-area-inset-bottom)
   );
 }
-.app-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0 28px; }
-.app-header h1 { margin: 0; font-size: 26px; letter-spacing: -.05em; }
 .eyebrow { margin: 0 0 6px; color: #86868b; font-size: 10px; font-weight: 700; letter-spacing: .12em; }
-.header-add { display: grid; place-items: center; width: 42px; height: 42px; color: #fff; border-radius: 50%; background: #007aff; }
 .placeholder-page { display: grid; min-height: 55svh; place-items: center; align-content: center; padding: 32px 16px; text-align: center; }
 .placeholder-page h2 { margin: 8px 0; font-size: 34px; letter-spacing: -.06em; }
 .placeholder-page p:last-child { max-width: 320px; margin: 0; color: #86868b; font-size: 14px; line-height: 1.6; }
@@ -130,6 +127,16 @@
 .transaction-form .type-picker { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
 .type-option { padding:11px 8px; color:#86868b; border:1px solid #e1e1e5; border-radius:11px; background:#fbfbfc; font-size:12px; font-weight:600; }
 .type-option.selected { color:#007aff; border-color:#007aff; background:#e8f2ff; }
+.transaction-form .other-details { gap: 14px; padding-top: 18px; border-top: 1px solid #e5e5e7; }
+.transaction-form .other-details legend { color: #1d1d1f; font-size: 15px; }
+.category-field { display: grid; gap: 8px; }
+.category-actions, .category-create-form { display: flex; align-items: center; gap: 12px; }
+.category-actions .text-button, .category-create-form .text-button { padding: 0; font-size: 11px; }
+.category-create-form input { flex: 1; }
+.subcategory-field { display: grid; gap: 8px; }
+.subcategory-field > .text-button { justify-self: start; padding: 0; font-size: 11px; }
+.save-transaction-button { display: grid; place-items: center; width: 48px; height: 48px; margin: 2px auto 0; padding: 0; color: #fff; border: 0; border-radius: 50%; background: #007aff; box-shadow: 0 6px 18px rgba(0, 122, 255, .25); cursor: pointer; }
+.save-transaction-button:disabled { cursor: not-allowed; opacity: .55; }
 .transaction-form .primary-button { width:100%; border:0; }
 .transaction-form .primary-button:disabled { cursor:not-allowed; opacity:.55; }
 .optional { color:#86868b; font-weight:400; }

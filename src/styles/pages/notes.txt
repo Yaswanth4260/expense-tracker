@@ -1,0 +1,112 @@
+Current design for add transcation is not as per functionality.
+Current:
+- for each option Expense, Income, Transfer we have same details appearing like amount category , account, date time, paymentmode ect. which is not correct for all options.
+
+what we need is
+for expenses we need
+
+---------------------
+Date field  |  time field
+---------------------
+amount field 
+---------------------
+category field
+---------------------
+payment mode
+---------------------
+other detsils section 
+
+note 
+hashtag
+add attchment
+---------------------
+               save icon
+---------------------
+
+for income we need
+
+---------------------
+Date field  |  time field
+---------------------
+amount field 
+---------------------
+category field
+---------------------
+payment mode
+---------------------
+other detsils section 
+
+note 
+hashtag
+add attchment
+---------------------
+               save icon
+---------------------
+
+
+for transfer we need 
+
+---------------------
+Date field  |  time field
+---------------------
+amount field 
+---------------------
+from field
+---------------------
+to field
+---------------------
+other details section 
+
+note 
+hashtag
+add attchment
+---------------------
+               save icon
+---------------------
+
+
+
+can we make this changes 
+
+
+what i observed is when we click on the input field to enter amount then keboard is popping up then after adding the amount we click enter then its jumping into next find input field also its happening for save last we have hashtag after addingthe if we click enter its jumping to next below one save button & getting saved. lets fix this.
+
+its not working
+for amount after entering the amount then we click enter on keyboard then keyboard should be closed cursor should not jump onto next field.
+same for category
+now for hashtag when we suppose enter #joy then click enter on keyboard then hashtag should be saved its not working
+
+what we can do is for category lets have a drop down user can add this own category & can customise the already existed categories 
+also we need to differentiate the expense & income categories those two will be separate 
+
+I observed for income & expense under other details we have account (choose account) option which is not needed lets remove this.
+
+
+I want to provide the sub category option for the user to create. suppose for Entertainment category we can have sub categories like movies, ott, ect lets have this built.
+
+lets do like this 
+on settings page we will have a categories section where user can manage the categories like create update delete etc for expenses & income 
+also the same categories should be displayed on add transcation respectively for expenses & income.
+now when we have a main category like Food then uses created 2 sub categories undrer that like KFC & Dominos then when user is trying to add an expense & selected Food then automatically the sub categories should have the 2 sub categories that user added.
+
+Cool Looks good but right now all the categories management is under settings the way that looks good but lets have a section categories under settings
+but when user clicks that then enter into a categories management page so that that will be clean.
+
+
+Cool its working. Also according to this category and subcategories under analysis page we have a donut chart lets make the changes accordingly.
+Right now in analysis page we have expense categories card inside that we have left side donut chart & right section category spends.
+what we can do is have the chart in middle & under that have the category wise accumuted detail.
+when on that we will have Food suppose user can click that & can see the spends & also a chart for that category spends. 
+
+Cool right now we have that category spend details appear below but that is not spread to left most & right most its in middle like a button lets spread that.
+& after opening the analysis page top most category  is auto selecting & displayed the subcategory spends which needs a change when user clicks one time on that food category then it should be visible if he clicks again it should disappear.
+
+when user clicks the category currently the subcategory spends is a like extending the card section can we have like if user clicks lets have this on a floating card
+
+Cool On home page i observed some issues
+lets remove top most right screen we have a plus icon that will add a transcation which is unnecessary lets remove that.
+Also we have like Guest user & upgrade to pro like that that is also unnecessary lets remove.
+Now we have greeting message like Good morning ... which is a static lets make that a dynamic based on the time lets display the greeting message
+like if its morning then Good Morning if its evening then Good Evening.
+
+on Home section lets remove the EXpense Tracker , paisa & there is a option on beside that to add a transcation lets remove them and adjust the cards to top as we removed these.
