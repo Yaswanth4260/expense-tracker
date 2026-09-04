@@ -178,8 +178,62 @@
 .income-value { color: #248a5b; }.expense-value { color: #b42318; }
 .dashboard-empty { padding: 34px 18px; color: #86868b; border: 1px dashed #d9d9de; border-radius: 17px; text-align: center; font-size: 13px; }
 .home-dashboard { padding-bottom: var(--space-6); }
-.home-dashboard .ui-page-header { padding-bottom: var(--space-3); }
-.home-dashboard .ui-page-header h2 { max-width: 270px; }
+.home-greeting { position: relative; display: flex; align-items: flex-start; gap: 14px; min-height: 128px; padding: 10px 4px 28px; overflow: hidden; }
+.home-greeting::after { position: absolute; right: -28px; bottom: 24px; width: 150px; height: 70px; border: 1px solid rgba(54, 120, 212, .16); border-radius: 50%; content: ''; transform: rotate(-18deg); }
+.home-greeting-mark { display: grid; width: 12px; height: 56px; flex: 0 0 12px; place-items: center; border-radius: 999px; background: var(--color-accent); box-shadow: 0 8px 20px rgba(54, 120, 212, .25); }
+.home-greeting-mark span { width: 4px; height: 4px; border-radius: 50%; background: #fff; box-shadow: 0 12px 0 #fff, 0 24px 0 #fff; }
+.home-greeting-copy { position: relative; z-index: 1; max-width: 360px; }
+.home-greeting-date { margin: 0 0 8px; color: var(--color-text-secondary); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.home-greeting h2 { max-width: 360px; margin: 0; color: var(--color-text-primary); font-size: clamp(28px, 8vw, 38px); line-height: 1.05; letter-spacing: -.05em; }
+.home-greeting-note { margin: 10px 0 0; color: var(--color-text-secondary); font-size: 12px; }
+.home-greeting-activity { position: absolute; z-index: 2; right: 0; bottom: 18px; display: grid; width: 112px; height: 92px; place-items: end center; padding: 0; color: var(--color-accent); border: 0; background: transparent; cursor: pointer; outline: none; }
+.home-greeting-activity::after { position: absolute; right: 3px; bottom: 5px; left: 3px; height: 2px; border-radius: 999px; background: var(--color-accent-soft); content: ''; pointer-events: none; }
+.home-greeting-activity:focus-visible { border-radius: 18px; outline: 2px solid var(--color-accent); outline-offset: 3px; }
+.motion-figure { position: relative; width: 36px; height: 46px; color: var(--color-accent); animation: figure-bob 1.8s ease-in-out infinite; }
+.motion-head { position: absolute; top: 1px; left: 13px; width: 10px; height: 10px; border: 3px solid currentColor; border-radius: 50%; }
+.motion-body, .motion-arm, .motion-leg { position: absolute; display: block; width: 3px; border-radius: 999px; background: currentColor; transform-origin: top center; }
+.motion-body { top: 13px; left: 17px; height: 17px; }
+.motion-arm { top: 15px; left: 17px; height: 15px; }
+.motion-arm-left { transform: rotate(48deg); }
+.motion-arm-right { transform: rotate(-48deg); }
+.motion-leg { top: 29px; left: 17px; height: 17px; transform-origin: top center; }
+.motion-leg-left { transform: rotate(28deg); }
+.motion-leg-right { transform: rotate(-28deg); }
+.home-greeting-activity.morning .motion-figure { animation: runner-bob .7s ease-in-out infinite; }
+.home-greeting-activity.morning .motion-arm-left { animation: runner-arm-left .7s ease-in-out infinite alternate; }
+.home-greeting-activity.morning .motion-arm-right { animation: runner-arm-right .7s ease-in-out infinite alternate; }
+.home-greeting-activity.morning .motion-leg-left { animation: runner-leg-left .7s ease-in-out infinite alternate; }
+.home-greeting-activity.morning .motion-leg-right { animation: runner-leg-right .7s ease-in-out infinite alternate; }
+.home-greeting-activity.daytime .motion-figure { animation: exercise-squat 1.2s ease-in-out infinite; }
+.home-greeting-activity.daytime .motion-arm-left { animation: exercise-arm-left 1.2s ease-in-out infinite; }
+.home-greeting-activity.daytime .motion-arm-right { animation: exercise-arm-right 1.2s ease-in-out infinite; }
+.home-greeting-activity.night .motion-figure { animation: sleep-drift 2.8s ease-in-out infinite; }
+.home-greeting-activity.night .motion-body { transform: rotate(76deg) translate(4px, -7px); }
+.home-greeting-activity.night .motion-head { transform: translate(12px, 13px); }
+.home-greeting-activity.night .motion-arm { opacity: .65; }
+.home-greeting-activity.night .motion-leg { opacity: .65; }
+.home-greeting-activity.awake .motion-figure { animation: figure-awake .45s ease-in-out 2; }
+.home-greeting-activity.night.awake .motion-body { transform: rotate(0); }
+.home-greeting-activity.night.awake .motion-head { transform: translate(0); }
+.home-greeting-activity.night.awake .motion-arm-left { transform: rotate(48deg); }
+.home-greeting-activity.night.awake .motion-arm-right { transform: rotate(-48deg); }
+.home-greeting-activity.night.awake .motion-leg-left { transform: rotate(28deg); }
+.home-greeting-activity.night.awake .motion-leg-right { transform: rotate(-28deg); }
+.home-greeting-mark, .home-greeting-copy { animation: greeting-enter .5s ease both; }
+.home-greeting-copy { animation-delay: .08s; }
+@keyframes greeting-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes figure-bob { 0%, 100% { transform: translateY(2px); } 50% { transform: translateY(-2px); } }
+@keyframes runner-bob { 0%, 100% { transform: translate(-2px, 2px); } 50% { transform: translate(3px, -2px); } }
+@keyframes runner-arm-left { to { transform: rotate(-48deg); } }
+@keyframes runner-arm-right { to { transform: rotate(48deg); } }
+@keyframes runner-leg-left { to { transform: rotate(-28deg); } }
+@keyframes runner-leg-right { to { transform: rotate(28deg); } }
+@keyframes exercise-squat { 0%, 100% { transform: translateY(1px) scaleY(1); } 50% { transform: translateY(4px) scaleY(.9); } }
+@keyframes exercise-arm-left { 0%, 100% { transform: rotate(48deg); } 50% { transform: rotate(-80deg); } }
+@keyframes exercise-arm-right { 0%, 100% { transform: rotate(-48deg); } 50% { transform: rotate(80deg); } }
+@keyframes sleep-drift { 0%, 100% { transform: translateY(2px) rotate(-3deg); opacity: .72; } 50% { transform: translateY(-1px) rotate(3deg); opacity: 1; } }
+@keyframes figure-awake { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-8px) rotate(-8deg); } }
+@media (prefers-reduced-motion: reduce) { .motion-figure, .motion-arm, .motion-leg, .home-greeting-mark, .home-greeting-copy { animation: none !important; } }
 .dashboard-actions { display: flex; gap: var(--space-2); }
 .profile-strip { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-5); color: var(--color-text-primary); font-size: 13px; font-weight: 700; }
 .user-avatar { display: grid; place-items: center; width: 42px; height: 42px; color: #fff; border-radius: 50%; background: #71808e; font-size: 12px; letter-spacing: .04em; }
@@ -204,7 +258,7 @@
 .recent-row:last-child { border-bottom: 0; }.recent-row .transaction-icon { display: grid; flex: 0 0 42px; place-items: center; width: 42px; height: 42px; color: var(--color-accent); border-radius: 13px; background: var(--color-accent-soft); }.recent-row .transaction-icon.income { color: #248a5b; background: #e8f7ef; }
 .recent-copy { display: grid; flex: 1; gap: 5px; min-width: 0; }.recent-copy strong { overflow: hidden; text-overflow: ellipsis; font-size: 13px; white-space: nowrap; }.recent-copy span { color: var(--color-text-secondary); font-size: 10px; }.recent-amount { display: grid; justify-items: end; gap: 5px; }.recent-amount strong { font: 500 12px var(--font-mono); white-space: nowrap; }.recent-amount span { color: var(--color-text-secondary); font-size: 10px; }.income-amount { color: #248a5b; }.expense-amount { color: #b42318; }
 .budget-card { display: grid; justify-items: center; gap: 8px; min-height: 240px; padding: var(--space-5); }.budget-card .ui-segmented-control { justify-self: center; }.budget-set-state { display: grid; justify-items: center; gap: 5px; padding: 22px 8px 8px; text-align: center; }.budget-set-state h3 { margin: 0; font: 500 25px var(--font-mono); }.budget-set-state p { margin: 0; color: var(--color-text-secondary); font-size: 12px; }.budget-card .ui-empty-state { padding: 22px 8px 8px; }.budget-card .ui-empty-state h3 { font-size: 18px; }
-@media (max-width: 430px) { .home-dashboard .ui-page-header h2 { font-size: 29px; }.profile-strip { gap: 9px; }.upgrade-pill { padding-inline: 9px; }.cash-flow-card { padding: 20px; }.flow-columns { gap: 12px; }.recent-card { padding-inline: 15px; } }
+@media (max-width: 430px) { .cash-flow-card { padding: 20px; }.flow-columns { gap: 12px; }.recent-card { padding-inline: 15px; } }
 
 .offline-indicator {
   position: fixed;

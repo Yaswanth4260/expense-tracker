@@ -191,6 +191,21 @@
   line-height: 1.5;
 }
 
+.user-profile-row {
+  align-items: center;
+}
+
+.settings-inline-input {
+  width: 120px;
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface-muted);
+  color: var(--color-text-primary);
+  font-size: 12px;
+}
+
 .settings-toggle {
   position: relative;
   width: 48px;

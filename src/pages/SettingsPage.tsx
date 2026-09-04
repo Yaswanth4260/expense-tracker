@@ -13,6 +13,7 @@ import {
   ChevronDown,
   Pencil,
   Plus,
+  UserRound,
 } from 'lucide-react'
 
 import {
@@ -30,6 +31,7 @@ import {
 import { addCategory, deleteCategory, getCategories, renameCategory } from '../services/categoryService'
 import { addSubcategory, deleteSubcategory, getSubcategories, renameSubcategory } from '../services/subcategoryService'
 import type { TransactionType } from '../types/transaction'
+import { getFirstName, saveFirstName } from '../services/userProfileService'
 
 type Theme = 'light' | 'dark'
 
@@ -140,6 +142,8 @@ export function SettingsPage() {
 
   const fileInputRef =
     useRef<HTMLInputElement>(null)
+
+  const [firstName, setFirstName] = useState(getFirstName)
 
   useEffect(() => {
     applyTheme(theme)
@@ -280,6 +284,20 @@ export function SettingsPage() {
           <span>{error}</span>
         </div>
       )}
+
+      <section className="settings-section">
+        <SectionHeader title="User" />
+        <Card className="settings-card">
+          <div className="settings-row user-profile-row">
+            <div className="settings-row-icon"><UserRound size={18} /></div>
+            <div className="settings-row-copy">
+              <strong>Your first name</strong>
+              <span>Personalize your home greeting.</span>
+            </div>
+            <input className="settings-inline-input" value={firstName} onChange={(event) => setFirstName(event.target.value)} onBlur={() => saveFirstName(firstName)} onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); event.currentTarget.blur() } }} placeholder="Your name" aria-label="Your first name" />
+          </div>
+        </Card>
+      </section>
 
       <section className="settings-section">
         <SectionHeader title="Appearance" />

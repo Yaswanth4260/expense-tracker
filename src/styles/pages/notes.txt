@@ -110,3 +110,45 @@ Now we have greeting message like Good morning ... which is a static lets make t
 like if its morning then Good Morning if its evening then Good Evening.
 
 on Home section lets remove the EXpense Tracker , paisa & there is a option on beside that to add a transcation lets remove them and adjust the cards to top as we removed these.
+
+
+I need you to implement a dynamic, hybrid user greeting
+
+Please write a custom hook (e.g., `useGreeting`) or a clean utility function that handles this based on these exact rules:
+
+1. Brand Tone & Emojis:
+- The brand is a modern, young startup. The copy needs to be energetic, casual, and conversational.
+- Include 1 tasteful emoji per phrase as a visual anchor.
+
+2. Robust Name Fallback:
+- The function should accept a `firstName` string.
+- If `firstName` is null, undefined, or empty, it must gracefully fall back to a generic greeting without broken punctuation (e.g., "Hey! 👋" instead of "Hey ,! 👋").
+
+3. Time-Based Logic (Client-Side Local Time):
+- **Morning (5:00 AM - 10:59 AM):** Return a random energetic morning greeting (e.g., "Rise and shine, [Name]! ☀️", "Morning, [Name]! Coffee first. ☕").
+- **Daytime/Evening (11:00 AM - 9:59 PM):** Return a random casual greeting (e.g., "Hey [Name]! 👋", "Look who it is! 😎", "What's up, [Name]? ✌️").
+- **Late Night (10:00 PM - 4:59 AM):** Return a random witty night greeting (e.g., "Up late, [Name]? 🌙", "Night owl mode: activated. 🦉").
+
+4. PWA & React Optimization:
+- Use an array of 3-4 distinct copy options per time block and randomize it so it feels fresh on app launch.
+- Ensure the time logic uses the client-side local clock (`new Date()`). 
+- Wrap the initialization safely (e.g., inside a `useEffect` or `useMemo` if making a hook) so it doesn't cause hydration mismatches if we ever use SSR, and works seamlessly when cached by the PWA service worker.
+
+as we are expecting the user name lets have a section on setting like user related where he can add the name.
+
+the top section where we have its says personal finance & below greeting we have your money organised simply is that necessary? what do u suggest?
+Ok lets do that and also make this greeting section super cool.
+
+Looks cool I observed for late night momentum "username" :emoji its in 3 lines for the rest in ui its 2 lines better have the greets 2 lines.
+also can we make this super cool like i have a idea like example if its a morning a man will do running on that greeting section 
+if its a evening the man will do excersices if its a night he will sleep like that can we do that ?
+
+instead of have the running icons or animated moon icon cant we have the animation motion figure ?
+
+lets not do this Greeting copy is constrained to two lines. revert that.
+now our action figure is looks like inside the icon can we not have like that make it super cool.
+Also i hhave the idea example as its night its sleeping if user touches that it should wake up & then after couple of. seconds it will go to sleep.
+Like this use creativity & have this for each morning, daytime evening night etc.
+
+Looks cool but that touching or clicking the figure - when we click on the figure its not waking up like to the figure bottom right if we click then only its working also
+when we click a small blue area is visible not looking good. can we do something on these.
