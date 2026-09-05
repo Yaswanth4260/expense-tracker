@@ -5,18 +5,20 @@ import {
   HeartPulse,
   MoreHorizontal,
   Receipt,
-  ShoppingBag,
+  Handbag,
   Tag,
   Utensils,
   WalletCards,
+  ShoppingBasket,
   type LucideIcon,
 } from 'lucide-react'
 
 export const categoryIconOptions = [
   { value: 'tag', label: 'Tag', Icon: Tag },
   { value: 'food', label: 'Food', Icon: Utensils },
+  { value: 'grocery', label: 'Grocery', Icon: ShoppingBasket},
   { value: 'transport', label: 'Transport', Icon: Car },
-  { value: 'shopping', label: 'Shopping', Icon: ShoppingBag },
+  { value: 'shopping', label: 'Shopping', Icon: Handbag },
   { value: 'bills', label: 'Bills', Icon: Receipt },
   { value: 'health', label: 'Health', Icon: HeartPulse },
   { value: 'entertainment', label: 'Entertainment', Icon: Clapperboard },
