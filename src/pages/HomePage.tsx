@@ -1,16 +1,17 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useRef, useState } from 'react'
-import { ArrowDownLeft, ArrowUpRight, Plus, WalletCards } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { getBudgets } from '../db/repositories/budgetRepository'
 import { getTransactions } from '../db/repositories/transactionRepository'
 import { Card, EmptyState, PrimaryButton, SectionHeader, SegmentedControl } from '../components/ui'
 import type { BudgetType } from '../types/budget'
-import type { Transaction } from '../types/transaction'
 import { getNetBalance, getRecentTransactions, getTotalExpense, getTotalIncome } from '../utils/dashboardCalculations'
 import { formatCurrency } from '../utils/formatCurrency'
 import { formatTime } from '../utils/formatTime'
 import { useGreeting } from '../hooks/useGreeting'
+import { getCategoryIconKey } from '../services/categoryService'
+import { getCategoryIcon } from '../utils/categoryIcons'
 
 const monthFormatter = new Intl.DateTimeFormat('en-IN', { month: 'long', year: 'numeric' })
 const todayFormatter = new Intl.DateTimeFormat('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })
@@ -18,12 +19,6 @@ const todayFormatter = new Intl.DateTimeFormat('en-IN', { weekday: 'long', day: 
 function localPeriod() {
   const now = new Date()
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
-}
-
-function transactionIcon(transaction: Transaction) {
-  if (transaction.type === 'income') return <ArrowDownLeft size={19} />
-  if (transaction.type === 'transfer') return <WalletCards size={19} />
-  return <ArrowUpRight size={19} />
 }
 
 export function HomePage() {
@@ -71,7 +66,7 @@ export function HomePage() {
       </button>
     </header>
     <Card className="cash-flow-card"><div className="cash-flow-heading"><div><p className="ui-eyebrow">CASH FLOW</p><h3>{period === 'month' ? monthFormatter.format(new Date()) : 'All time'}</h3></div><select aria-label="Cash flow period" value={period} onChange={(event) => setPeriod(event.target.value as 'month' | 'all')}><option value="month">This Month</option><option value="all">All Time</option></select></div><div className="flow-columns"><div><span className="flow-label spending-label">SPENDING</span><strong>{formatCurrency(spending)}</strong></div><div><span className="flow-label income-label">INCOME</span><strong>{formatCurrency(income)}</strong></div></div><div className="net-balance"><span>Net balance</span><strong>{formatCurrency(balance)}</strong></div></Card>
-    <section className="dashboard-section"><SectionHeader title="Recent transactions" action={<Link className="section-button" to="/transactions">See all</Link>} />{recentTransactions.length ? <Card className="recent-card">{recentTransactions.map((transaction) => <Link className="recent-row" to={`/transactions/${transaction.id}`} key={transaction.id}><span className={transaction.type === 'income' ? 'transaction-icon income' : 'transaction-icon'}>{transactionIcon(transaction)}</span><span className="recent-copy"><strong>{transaction.category}</strong><span>{transaction.paymentMode.replace('-', ' ')}</span></span><span className="recent-amount"><strong className={transaction.type === 'income' ? 'income-amount' : transaction.type === 'expense' ? 'expense-amount' : 'transfer-amount'}>{formatCurrency(transaction.amount)}</strong><span>{formatTime(transaction.time)}</span></span></Link>)}</Card> : <EmptyState title="No transactions yet" description="Add your first transaction to see it here." action={<PrimaryButton onClick={() => window.location.assign('/expense-tracker/add')}><Plus size={16} /> Add transaction</PrimaryButton>} />}</section>
+    <section className="dashboard-section"><SectionHeader title="Recent transactions" action={<Link className="section-button" to="/transactions">See all</Link>} />{recentTransactions.length ? <Card className="recent-card">{recentTransactions.map((transaction) => { const CategoryIcon = getCategoryIcon(getCategoryIconKey(transaction.type, transaction.category)); return <Link className="recent-row" to={`/transactions/${transaction.id}`} key={transaction.id}><span className={`transaction-icon category-icon ${transaction.type === 'income' ? 'income' : ''}`}><CategoryIcon size={19} /></span><span className="recent-copy"><strong>{transaction.subcategory || transaction.category}</strong><span>{transaction.paymentMode.replace('-', ' ')}</span></span><span className="recent-amount"><strong className={transaction.type === 'income' ? 'income-amount' : transaction.type === 'expense' ? 'expense-amount' : 'transfer-amount'}>{formatCurrency(transaction.amount)}</strong><span>{formatTime(transaction.time)}</span></span></Link> })}</Card> : <EmptyState title="No transactions yet" description="Add your first transaction to see it here." action={<PrimaryButton onClick={() => window.location.assign('/expense-tracker/add')}><Plus size={16} /> Add transaction</PrimaryButton>} />}</section>
     <section className="dashboard-section"><SectionHeader title="Budgets" /><Card className="budget-card"><SegmentedControl value={budgetType} onChange={setBudgetType} label="Budget period" options={[{ value: 'monthly', label: 'Monthly' }, { value: 'annual', label: 'Annual' }]} />{selectedBudget ? <div className="budget-set-state"><p className="ui-eyebrow">{budgetType === 'monthly' ? 'THIS MONTH' : 'THIS YEAR'}</p><h3>{formatCurrency(selectedBudget.amount)}</h3><p>Budget is set for this period.</p>
       <PrimaryButton onClick={() => navigate('/budget')}>Update budget</PrimaryButton></div> : <EmptyState title="No budget set" description={`Create a ${budgetType} budget to keep your spending on track.`} action={<PrimaryButton onClick={() => navigate('/budget')}
       ><Plus size={16} /> Set budget</PrimaryButton>} />}</Card></section>

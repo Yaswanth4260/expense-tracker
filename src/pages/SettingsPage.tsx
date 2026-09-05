@@ -28,10 +28,11 @@ import {
   restoreBackup,
   resetAllData,
 } from '../services/dataBackupService'
-import { addCategory, deleteCategory, getCategories, renameCategory } from '../services/categoryService'
+import { addCategory, deleteCategory, getCategories, getCategoryIconKey, renameCategory, setCategoryIcon } from '../services/categoryService'
 import { addSubcategory, deleteSubcategory, getSubcategories, renameSubcategory } from '../services/subcategoryService'
 import type { TransactionType } from '../types/transaction'
 import { getFirstName, saveFirstName } from '../services/userProfileService'
+import { categoryIconOptions, getCategoryIcon, type CategoryIconKey } from '../utils/categoryIcons'
 
 type Theme = 'light' | 'dark'
 
@@ -60,6 +61,7 @@ export function CategoryManager() {
   const [expanded, setExpanded] = useState<string | null>(null)
   const [subcategories, setSubcategories] = useState<Record<string, string[]>>({})
   const [newCategory, setNewCategory] = useState('')
+  const [newCategoryIcon, setNewCategoryIcon] = useState<CategoryIconKey>('tag')
   const [newSubcategory, setNewSubcategory] = useState('')
 
   async function refresh(nextType = type) {
@@ -81,8 +83,9 @@ export function CategoryManager() {
 
   async function createCategory() {
     if (!newCategory.trim()) return
-    setCategories(await addCategory(type, newCategory))
+    setCategories(await addCategory(type, newCategory, newCategoryIcon))
     setNewCategory('')
+    setNewCategoryIcon('tag')
   }
 
   async function editCategory(category: string) {
@@ -120,8 +123,8 @@ export function CategoryManager() {
 
   return <Card className="settings-card category-manager">
     <div className="category-manager-tabs"><button type="button" className={type === 'expense' ? 'selected' : ''} onClick={() => setType('expense')}>Expenses</button><button type="button" className={type === 'income' ? 'selected' : ''} onClick={() => setType('income')}>Income</button></div>
-    <div className="category-create-row"><input value={newCategory} onChange={(event) => setNewCategory(event.target.value)} placeholder={`New ${type} category`} /><button type="button" className="settings-icon-action" onClick={createCategory} aria-label="Add category" title="Add category"><Plus size={17} /></button></div>
-    <div className="category-manager-list">{categories.map((category) => <div className="category-manager-item" key={category}><div className="category-manager-row"><button type="button" className="category-expand-button" onClick={() => toggleCategory(category)}><ChevronDown size={16} className={expanded === category ? 'rotated' : ''} /><strong>{category}</strong></button><button type="button" className="settings-icon-action" onClick={() => editCategory(category)} aria-label={`Rename ${category}`} title="Rename"><Pencil size={15} /></button><button type="button" className="settings-icon-action danger" onClick={() => removeCategory(category)} aria-label={`Delete ${category}`} title="Delete"><Trash2 size={15} /></button></div>{expanded === category && <div className="subcategory-manager"><div className="subcategory-create-row"><input value={newSubcategory} onChange={(event) => setNewSubcategory(event.target.value)} placeholder="New subcategory" /><button type="button" className="text-button" onClick={() => createSubcategory(category)}>Add</button></div>{(subcategories[category] || []).map((subcategory) => <div className="subcategory-manager-row" key={subcategory}><span>{subcategory}</span><span><button type="button" className="text-button" onClick={() => editSubcategory(category, subcategory)}>Rename</button><button type="button" className="text-button danger-button" onClick={() => removeSubcategory(category, subcategory)}>Delete</button></span></div>)}{!subcategories[category]?.length && <small>No subcategories yet.</small>}</div>}</div>)}</div>
+    <div className="category-create-row"><input value={newCategory} onChange={(event) => setNewCategory(event.target.value)} placeholder={`New ${type} category`} /><select value={newCategoryIcon} onChange={(event) => setNewCategoryIcon(event.target.value as CategoryIconKey)} aria-label="Category icon">{categoryIconOptions.map(({ value, label }) => <option value={value} key={value}>{label}</option>)}</select><button type="button" className="settings-icon-action" onClick={createCategory} aria-label="Add category" title="Add category"><Plus size={17} /></button></div>
+    <div className="category-manager-list">{categories.map((category) => { const CategoryIcon = getCategoryIcon(getCategoryIconKey(type, category)); return <div className="category-manager-item" key={category}><div className="category-manager-row"><button type="button" className="category-expand-button" onClick={() => toggleCategory(category)}><span className="category-manager-icon"><CategoryIcon size={16} /></span><ChevronDown size={16} className={expanded === category ? 'rotated' : ''} /><strong>{category}</strong></button><select className="category-icon-select" value={getCategoryIconKey(type, category)} onChange={(event) => { setCategoryIcon(type, category, event.target.value as CategoryIconKey); setCategories((current) => [...current]) }} aria-label={`Icon for ${category}`}>{categoryIconOptions.map(({ value, label }) => <option value={value} key={value}>{label}</option>)}</select><button type="button" className="settings-icon-action" onClick={() => editCategory(category)} aria-label={`Rename ${category}`} title="Rename"><Pencil size={15} /></button><button type="button" className="settings-icon-action danger" onClick={() => removeCategory(category)} aria-label={`Delete ${category}`} title="Delete"><Trash2 size={15} /></button></div>{expanded === category && <div className="subcategory-manager"><div className="subcategory-create-row"><input value={newSubcategory} onChange={(event) => setNewSubcategory(event.target.value)} placeholder="New subcategory" /><button type="button" className="text-button" onClick={() => createSubcategory(category)}>Add</button></div>{(subcategories[category] || []).map((subcategory) => <div className="subcategory-manager-row" key={subcategory}><span>{subcategory}</span><span><button type="button" className="text-button" onClick={() => editSubcategory(category, subcategory)}>Rename</button><button type="button" className="text-button danger-button" onClick={() => removeSubcategory(category, subcategory)}>Delete</button></span></div>)}{!subcategories[category]?.length && <small>No subcategories yet.</small>}</div>}</div> })}</div>
   </Card>
 }
 
