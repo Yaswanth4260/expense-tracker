@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useEffect, useState, type FormEvent } from 'react'
-import { Save } from 'lucide-react'
+import { ArrowLeft, Save, Trash2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { getAccounts } from '../db/repositories/accountRepository'
 import { createTransaction, updateTransaction } from '../db/repositories/transactionRepository'
@@ -25,9 +25,9 @@ function parseHashtags(value: string) {
   return value.split(/[\s,]+/).map((tag) => tag.trim().replace(/^#/, '')).filter(Boolean).map((tag) => `#${tag}`)
 }
 
-type Props = { transaction?: Transaction; onSaved?: () => void; onCancel?: () => void }
+type Props = { transaction?: Transaction; onSaved?: () => void; onCancel?: () => void; onDelete?: () => void }
 
-export function AddTransactionPage({ transaction, onSaved, onCancel }: Props) {
+export function AddTransactionPage({ transaction, onSaved, onCancel, onDelete }: Props) {
   const navigate = useNavigate()
   const accounts = useLiveQuery(getAccounts, [])
   const [transactionType, setTransactionType] = useState<TransactionType>(transaction?.type || 'expense')
@@ -112,7 +112,7 @@ export function AddTransactionPage({ transaction, onSaved, onCancel }: Props) {
   }
 
   return <section className="add-transaction-page">
-    <div className="page-heading"><div><p className="eyebrow">{transaction ? 'EDIT RECORD' : 'NEW RECORD'}</p><h2>{transaction ? 'Edit transaction' : 'Add transaction'}</h2><p>Record money in, money out, or a transfer.</p></div><button className="text-button" type="button" onClick={onCancel || (() => navigate('/'))}>Cancel</button></div>
+    <div className={`page-heading transaction-form-heading ${transaction ? 'edit-transaction-heading' : ''}`}><div>{transaction ? <button className="back-button" type="button" onClick={onCancel || (() => navigate('/transactions'))}><ArrowLeft size={18} /> Back</button> : <p className="eyebrow">NEW RECORD</p>}<h2>{transaction ? 'Edit transaction' : 'Add transaction'}</h2>{!transaction && <p>Record money in, money out, or a transfer.</p>}</div>{transaction ? <button className="delete-transaction-button" type="button" onClick={onDelete} aria-label="Delete transaction" title="Delete transaction"><Trash2 size={19} /></button> : <button className="text-button" type="button" onClick={onCancel || (() => navigate('/'))}>Cancel</button>}</div>
     <form className="transaction-form" onSubmit={submit} onKeyDown={preventImplicitSubmit} noValidate>
       <fieldset><legend>Transaction type</legend><div className="type-picker">{transactionTypes.map((type) => <button className={transactionType === type ? 'type-option selected' : 'type-option'} type="button" key={type} onClick={() => setTransactionType(type)}>{type[0].toUpperCase() + type.slice(1)}</button>)}</div></fieldset>
       <div className="form-row"><label>Date<input name="date" type="date" defaultValue={transaction?.date || localDate()} required /></label><label>Time<input name="time" type="time" defaultValue={transaction?.time || localTime()} required /></label></div>

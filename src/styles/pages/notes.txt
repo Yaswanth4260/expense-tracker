@@ -152,3 +152,61 @@ Like this use creativity & have this for each morning, daytime evening night etc
 
 Looks cool but that touching or clicking the figure - when we click on the figure its not waking up like to the figure bottom right if we click then only its working also
 when we click a small blue area is visible not looking good. can we do something on these.
+
+lets make some changes on the home page recent transactions page
+lets have the transaction detail like this 
+--------------------------------
+      Category                  amount
+icon
+      payment mode              date
+--------------------------------
+
+
+now lets fix the All Transactions page
+group the transactions by date, each day will be a card
+
+--------------------------------------
+Today
+--------------------------------------
+    category                    Amount 
+icon
+    payment mode                time
+--------------------------------------
+--------------------------------------
+Yesterday
+--------------------------------------
+    category                    Amount 
+icon
+    payment mode                time
+--------------------------------------
+--------------------------------------
+03 September
+--------------------------------------
+    category                    Amount 
+icon
+    payment mode                time
+--------------------------------------
+
+
+like this we will follow if there is a amount related to income display indian currency symbol with amount as green colour for expenses amount its a red colour
+
+
+looks good lets make some adjustments.
+- amount displayed lets make that font bold & remove (-) & (+) prefixed on amount as its unnecessary as we already have the color.
+- Time lets display like 09:00 AM, 07:30 PM like this as example lets fllow this format.
+- when user clicks the trancastion right now we will see a edit trancastion page lets do like this when user click a transaction 
+lets have the screen same as when we add a trsnsaction but additional to that screen we will have like
+---------------------------------------------------------------------
+<- (back button) Edit transaction.                       delete icon
+---------------------------------------------------------------------
+expense                   income                     transfer
+---------------------------------------------------------------------
+date                                         time
+amount     
+.
+.
+.
+we will follow the same screen we have for add trancastion remaining 
+
+in home page we have the See all at recent transactions lets have that as a button.
+Also time displayed we are seeing Am & Pm instead of captalize AM & PM lets. fix that.
