@@ -1,5 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import { Search, SlidersHorizontal, X } from 'lucide-react'
+import { ArrowUpDown, Search, SlidersHorizontal, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getTransactions } from '../db/repositories/transactionRepository'
@@ -21,6 +21,13 @@ function dateLabel(date: string) {
   return new Intl.DateTimeFormat('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }).format(new Date(`${date}T12:00:00`))
 }
 
+const transactionSortLabels = {
+  newest: 'Newest first',
+  oldest: 'Oldest first',
+  highest: 'Highest amount',
+  lowest: 'Lowest amount',
+} as const
+
 const transactionTypeLabels: Record<'all' | TransactionType, string> = {
   all: 'All',
   expense: 'Expenses',
@@ -37,6 +44,7 @@ export function TransactionsPage() {
   const accounts = useAccounts()
   const [searchQuery, setSearchQuery] = useState('')
   const [typeFilter, setTypeFilter] = useState<'all' | TransactionType>('all')
+  const [sortOrder, setSortOrder] = useState<keyof typeof transactionSortLabels>('newest')
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [subcategoryFilter, setSubcategoryFilter] = useState('all')
@@ -83,7 +91,16 @@ export function TransactionsPage() {
     })
   }, [accountFilter, accountNames, allTransactions, categoryFilter, dateFrom, dateTo, maxAmount, minAmount, normalizedQuery, paymentModeFilter, subcategoryFilter, typeFilter])
 
-  const groupedTransactions = filteredTransactions.reduce<Record<string, Transaction[]>>((groups, transaction) => {
+  const sortedTransactions = useMemo(() => {
+    return [...filteredTransactions].sort((a, b) => {
+      if (sortOrder === 'highest') return b.amount - a.amount || b.createdAt.localeCompare(a.createdAt)
+      if (sortOrder === 'lowest') return a.amount - b.amount || b.createdAt.localeCompare(a.createdAt)
+      if (sortOrder === 'oldest') return a.createdAt.localeCompare(b.createdAt)
+      return b.createdAt.localeCompare(a.createdAt)
+    })
+  }, [filteredTransactions, sortOrder])
+
+  const groupedTransactions = sortedTransactions.reduce<Record<string, Transaction[]>>((groups, transaction) => {
     ;(groups[transaction.date] ||= []).push(transaction)
     return groups
   }, {})
@@ -141,11 +158,20 @@ export function TransactionsPage() {
             onClick={() => setTypeFilter(type)}
           >{transactionTypeLabels[type]}</button>)}
         </div>
-        <button type="button" className={`transactions-advanced-toggle ${hasAdvancedFilter ? 'active' : ''}`} onClick={() => setShowAdvancedFilters((open) => !open)} aria-expanded={showAdvancedFilters} aria-controls="transactions-advanced-filters">
-          <SlidersHorizontal size={16} aria-hidden="true" />
-          <span>Filters</span>
-          {activeFilterCount > 0 && <strong>{activeFilterCount}</strong>}
-        </button>
+        <div className="transactions-toolbar-actions">
+          <label className="transactions-sort">
+            <ArrowUpDown size={16} aria-hidden="true" />
+            <span className="sr-only">Sort transactions</span>
+            <select value={sortOrder} onChange={(event) => setSortOrder(event.target.value as keyof typeof transactionSortLabels)} aria-label="Sort transactions">
+              {Object.entries(transactionSortLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            </select>
+          </label>
+          <button type="button" className={`transactions-advanced-toggle ${hasAdvancedFilter ? 'active' : ''}`} onClick={() => setShowAdvancedFilters((open) => !open)} aria-expanded={showAdvancedFilters} aria-controls="transactions-advanced-filters">
+            <SlidersHorizontal size={16} aria-hidden="true" />
+            <span>Filters</span>
+            {activeFilterCount > 0 && <strong>{activeFilterCount}</strong>}
+          </button>
+        </div>
       </div>
 
       {showAdvancedFilters && <div id="transactions-advanced-filters" className="transactions-advanced-filters">
