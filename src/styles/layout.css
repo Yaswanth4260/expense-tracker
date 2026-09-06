@@ -147,6 +147,23 @@
 .attachment-name { margin:0; color:#248a5b; font-size:12px; }
 .form-error { margin:0; padding:11px 12px; color:#b42318; border-radius:10px; background:#fff0ef; font-size:12px; }
 .transactions-page, .transaction-details-page { padding-bottom:24px; }
+.transactions-filter { display:grid; gap:12px; margin:18px 0 20px; }
+.transactions-search { display:flex; align-items:center; gap:10px; min-height:48px; padding:0 14px; color:var(--color-text-secondary); border:1px solid var(--color-border); border-radius:var(--radius-md); background:var(--color-surface); box-shadow:var(--shadow-card); }
+.transactions-search:focus-within { border-color:var(--color-accent); box-shadow:0 0 0 3px var(--color-accent-soft); }
+.transactions-search input { flex:1; min-width:0; height:44px; padding:0; color:var(--color-text-primary); border:0; outline:0; background:transparent; font-size:13px; }
+.transactions-search input::placeholder { color:var(--color-text-secondary); }
+.transactions-search input::-webkit-search-cancel-button { display:none; }
+.transactions-search-clear { display:grid; flex:0 0 auto; width:30px; height:30px; place-items:center; padding:0; color:var(--color-text-secondary); border:0; border-radius:50%; background:var(--color-surface-muted); cursor:pointer; }
+.transactions-search-clear:hover { color:var(--color-text-primary); }
+.transaction-filter-chips { display:flex; gap:8px; overflow-x:auto; padding:1px 1px 4px; scrollbar-width:none; }
+.transaction-filter-chips::-webkit-scrollbar { display:none; }
+.transaction-filter-chip { flex:0 0 auto; min-height:34px; padding:0 14px; color:var(--color-text-secondary); border:1px solid var(--color-border); border-radius:var(--radius-pill); background:var(--color-surface); cursor:pointer; font-size:11px; font-weight:700; }
+.transaction-filter-chip.active { color:var(--color-accent); border-color:var(--color-accent); background:var(--color-accent-soft); }
+.transactions-no-results { display:grid; justify-items:center; gap:7px; padding:48px 20px; border:1px solid var(--color-border); border-radius:var(--radius-lg); background:var(--color-surface); box-shadow:var(--shadow-card); text-align:center; }
+.transactions-no-results strong { color:var(--color-text-primary); font-size:16px; }
+.transactions-no-results span { max-width:300px; color:var(--color-text-secondary); font-size:12px; line-height:1.5; }
+.transactions-clear-filters { margin-top:6px; min-height:36px; padding:0 14px; color:var(--color-accent); border:1px solid var(--color-accent-soft); border-radius:var(--radius-pill); background:var(--color-surface); cursor:pointer; font-size:11px; font-weight:700; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 .transaction-day-list { display: grid; gap: 18px; }
 .transaction-day-card { overflow: hidden; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-surface); box-shadow: var(--shadow-card); }
 .transaction-day-card h3 { margin: 0; padding: 16px 18px 12px; color: var(--color-text-primary); font-size: 17px; letter-spacing: -.03em; }
