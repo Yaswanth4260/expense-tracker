@@ -93,17 +93,21 @@ export function TransactionsPage() {
 
   const sortedTransactions = useMemo(() => {
     return [...filteredTransactions].sort((a, b) => {
-      if (sortOrder === 'highest') return b.amount - a.amount || b.createdAt.localeCompare(a.createdAt)
-      if (sortOrder === 'lowest') return a.amount - b.amount || b.createdAt.localeCompare(a.createdAt)
-      if (sortOrder === 'oldest') return a.createdAt.localeCompare(b.createdAt)
-      return b.createdAt.localeCompare(a.createdAt)
+      const aDateTime = `${a.date}T${a.time}`
+      const bDateTime = `${b.date}T${b.time}`
+      if (sortOrder === 'highest') return b.amount - a.amount || bDateTime.localeCompare(aDateTime)
+      if (sortOrder === 'lowest') return a.amount - b.amount || bDateTime.localeCompare(aDateTime)
+      if (sortOrder === 'oldest') return aDateTime.localeCompare(bDateTime)
+      return bDateTime.localeCompare(aDateTime)
     })
   }, [filteredTransactions, sortOrder])
 
-  const groupedTransactions = sortedTransactions.reduce<Record<string, Transaction[]>>((groups, transaction) => {
-    ;(groups[transaction.date] ||= []).push(transaction)
+  const groupedTransactions = sortedTransactions.reduce<Array<{ date: string; transactions: Transaction[] }>>((groups, transaction) => {
+    const currentGroup = groups[groups.length - 1]
+    if (currentGroup?.date === transaction.date) currentGroup.transactions.push(transaction)
+    else groups.push({ date: transaction.date, transactions: [transaction] })
     return groups
-  }, {})
+  }, [])
 
   const hasActiveFilter = Boolean(normalizedQuery) || typeFilter !== 'all' || hasAdvancedFilter
   const filteredTotal = useMemo(() => filteredTransactions.reduce((sum, transaction) => sum + transaction.amount, 0), [filteredTransactions])
@@ -235,6 +239,6 @@ export function TransactionsPage() {
       </div>}
     </div>
 
-    {filteredTransactions.length ? <div className="transaction-day-list">{Object.entries(groupedTransactions).map(([date, dayTransactions]) => <section className="transaction-day-card" key={date}><h3>{dateLabel(date)}</h3><div className="transaction-day-rows">{dayTransactions.map((transaction) => { const CategoryIcon = getCategoryIcon(getCategoryIconKey(transaction.type, transaction.category)); return <Link className="all-transaction-row" to={`/transactions/${transaction.id}`} key={transaction.id}><span className={`transaction-icon category-icon ${transaction.type === 'income' ? 'income' : ''}`}><CategoryIcon size={19} /></span><span className="recent-copy"><strong>{transaction.subcategory || transaction.category}</strong><span>{transaction.paymentMode.replace('-', ' ')}</span></span><span className="recent-amount"><strong className={transaction.type === 'income' ? 'income-amount' : transaction.type === 'expense' ? 'expense-amount' : 'transfer-amount'}>{formatCurrency(transaction.amount)}</strong><span>{formatTime(transaction.time)}</span></span></Link> })}</div></section>)}</div> : allTransactions.length ? <div className="transactions-no-results"><strong>No matching transactions</strong><span>'No transactions match the current search and filters.'</span>{hasActiveFilter && <button type="button" className="transactions-clear-filters" onClick={clearFilters}>Clear filters</button>}</div> : <div className="dashboard-empty">No transactions yet.</div>}
+    {filteredTransactions.length ? <div className="transaction-day-list">{groupedTransactions.map(({ date, transactions: dayTransactions }, groupIndex) => <section className="transaction-day-card" key={`${date}-${groupIndex}`}><h3>{dateLabel(date)}</h3><div className="transaction-day-rows">{dayTransactions.map((transaction) => { const CategoryIcon = getCategoryIcon(getCategoryIconKey(transaction.type, transaction.category)); return <Link className="all-transaction-row" to={`/transactions/${transaction.id}`} key={transaction.id}><span className={`transaction-icon category-icon ${transaction.type === 'income' ? 'income' : ''}`}><CategoryIcon size={19} /></span><span className="recent-copy"><strong>{transaction.subcategory || transaction.category}</strong><span>{transaction.paymentMode.replace('-', ' ')}</span></span><span className="recent-amount"><strong className={transaction.type === 'income' ? 'income-amount' : transaction.type === 'expense' ? 'expense-amount' : 'transfer-amount'}>{formatCurrency(transaction.amount)}</strong><span>{formatTime(transaction.time)}</span></span></Link> })}</div></section>)}</div> : allTransactions.length ? <div className="transactions-no-results"><strong>No matching transactions</strong><span>'No transactions match the current search and filters.'</span>{hasActiveFilter && <button type="button" className="transactions-clear-filters" onClick={() => clearFilters()}>Clear filters</button>}</div> : <div className="dashboard-empty">No transactions yet.</div>}
   </section>
 }
