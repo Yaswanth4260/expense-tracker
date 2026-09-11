@@ -21,6 +21,10 @@ function localPeriod() {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
 }
 
+function getAmountFontSize(label: string) {
+  return Math.max(10, Math.min(35, 190 / label.length))
+}
+
 export function HomePage() {
   const navigate = useNavigate()
   const transactions = useLiveQuery(getTransactions, []) ?? []
@@ -36,6 +40,10 @@ export function HomePage() {
   const spending = getTotalExpense(selectedTransactions)
   const income = getTotalIncome(selectedTransactions)
   const balance = getNetBalance(selectedTransactions)
+  const spendingLabel = formatCurrency(spending)
+  const incomeLabel = formatCurrency(income)
+  const balanceLabel = formatCurrency(balance)
+  const cashFlowFontSize = Math.min(getAmountFontSize(spendingLabel), getAmountFontSize(incomeLabel))
   const recentTransactions = getRecentTransactions(transactions)
   const selectedBudget = budgets.find((budget) => budget.type === budgetType && budget.period === (budgetType === 'monthly' ? currentPeriod : currentPeriod.slice(0, 4)))
 
@@ -65,7 +73,7 @@ export function HomePage() {
         </div>
       </button>
     </header>
-    <Card className="cash-flow-card"><div className="cash-flow-heading"><div><p className="ui-eyebrow">CASH FLOW</p><h3>{period === 'month' ? monthFormatter.format(new Date()) : 'All time'}</h3></div><select aria-label="Cash flow period" value={period} onChange={(event) => setPeriod(event.target.value as 'month' | 'all')}><option value="month">This Month</option><option value="all">All Time</option></select></div><div className="flow-columns"><div><span className="flow-label spending-label">SPENDING</span><strong>{formatCurrency(spending)}</strong></div><div><span className="flow-label income-label">INCOME</span><strong>{formatCurrency(income)}</strong></div></div><div className="net-balance"><span>Net balance</span><strong>{formatCurrency(balance)}</strong></div></Card>
+    <Card className="cash-flow-card"><div className="cash-flow-heading"><div><p className="ui-eyebrow">CASH FLOW</p><h3>{period === 'month' ? monthFormatter.format(new Date()) : 'All time'}</h3></div><select aria-label="Cash flow period" value={period} onChange={(event) => setPeriod(event.target.value as 'month' | 'all')}><option value="month">This Month</option><option value="all">All Time</option></select></div><div className="flow-columns"><div><span className="flow-label spending-label">SPENDING</span><strong style={{ fontSize: `${cashFlowFontSize}px` }}>{spendingLabel}</strong></div><div><span className="flow-label income-label">INCOME</span><strong style={{ fontSize: `${cashFlowFontSize}px` }}>{incomeLabel}</strong></div></div><div className="net-balance"><span>Net balance</span><strong style={{ fontSize: `${Math.min(15, getAmountFontSize(balanceLabel))}px` }}>{balanceLabel}</strong></div></Card>
     <section className="dashboard-section"><SectionHeader title="Recent transactions" action={<Link className="section-button" to="/transactions">See all</Link>} />{recentTransactions.length ? <Card className="recent-card">{recentTransactions.map((transaction) => { const CategoryIcon = getCategoryIcon(getCategoryIconKey(transaction.type, transaction.category)); return <Link className="recent-row" to={`/transactions/${transaction.id}`} key={transaction.id}><span className={`transaction-icon category-icon ${transaction.type === 'income' ? 'income' : ''}`}><CategoryIcon size={19} /></span><span className="recent-copy"><strong>{transaction.subcategory || transaction.category}</strong><span>{transaction.paymentMode.replace('-', ' ')}</span></span><span className="recent-amount"><strong className={transaction.type === 'income' ? 'income-amount' : transaction.type === 'expense' ? 'expense-amount' : 'transfer-amount'}>{formatCurrency(transaction.amount)}</strong><span>{formatTime(transaction.time)}</span></span></Link> })}</Card> : <EmptyState title="No transactions yet" description="Add your first transaction to see it here." action={<PrimaryButton onClick={() => window.location.assign('/expense-tracker/add')}><Plus size={16} /> Add transaction</PrimaryButton>} />}</section>
     <section className="dashboard-section"><SectionHeader title="Budgets" /><Card className="budget-card"><SegmentedControl value={budgetType} onChange={setBudgetType} label="Budget period" options={[{ value: 'monthly', label: 'Monthly' }, { value: 'annual', label: 'Annual' }]} />{selectedBudget ? <div className="budget-set-state"><p className="ui-eyebrow">{budgetType === 'monthly' ? 'THIS MONTH' : 'THIS YEAR'}</p><h3>{formatCurrency(selectedBudget.amount)}</h3><p>Budget is set for this period.</p>
       <PrimaryButton onClick={() => navigate('/budget')}>Update budget</PrimaryButton></div> : <EmptyState title="No budget set" description={`Create a ${budgetType} budget to keep your spending on track.`} action={<PrimaryButton onClick={() => navigate('/budget')}

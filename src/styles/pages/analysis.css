@@ -73,11 +73,10 @@
 }
 
 .analysis-summary-card strong {
-  overflow: hidden;
+  min-width: 0;
   color: var(--color-text-primary);
-  font: 500 clamp(14px, 4vw, 19px) var(--font-mono);
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font: 500 clamp(11px, 3.4vw, 19px) var(--font-mono);
+  overflow-wrap: anywhere;
 }
 
 .analysis-summary-card strong.analysis-negative {
@@ -406,6 +405,19 @@
 .category-spend-bar-row {
   display: grid;
   gap: 6px;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.category-spend-bar-row.selected {
+  border-color: var(--color-border);
+  background: var(--color-surface-muted);
 }
 
 .category-spend-bar-label {
@@ -434,6 +446,72 @@
   border-radius: inherit;
   background: var(--color-accent);
   transition: width .25s ease;
+}
+
+.subcategory-transactions-card {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface-muted);
+}
+
+.subcategory-transactions-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.subcategory-transactions-heading h5 {
+  margin: 4px 0 0;
+  color: var(--color-text-primary);
+  font-size: 14px;
+}
+
+.subcategory-transactions-close {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.subcategory-transactions-list {
+  display: grid;
+  gap: 10px;
+}
+
+.subcategory-transaction-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border);
+}
+
+.subcategory-transaction-row > div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.subcategory-transaction-row span {
+  overflow-wrap: anywhere;
+  color: var(--color-text-secondary);
+  font-size: 10px;
+}
+
+.subcategory-transaction-row strong {
+  color: var(--color-text-primary);
+  font: 500 11px var(--font-mono);
 }
 
 .analysis-list-empty {

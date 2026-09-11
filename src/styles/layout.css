@@ -306,13 +306,17 @@
 .cash-flow-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); }
 .cash-flow-heading h3 { margin: 0; color: var(--color-text-primary); font-size: 19px; }
 .cash-flow-heading select { width: auto; min-height: 36px; padding: 8px 10px; border-radius: var(--radius-pill); font-size: 11px; }
-.flow-columns { display: flex; gap: var(--space-5); margin: 30px 0 22px; }
+.flow-columns { display: flex; gap: clamp(24px, 10vw, 72px); margin: 30px 0 22px; }
 .flow-columns > div { flex: 1; min-width: 0; }
+.flow-columns > div:first-child { padding-right: clamp(12px, 4vw, 32px); }
+.flow-columns > div:last-child { padding-left: clamp(12px, 4vw, 32px); }
+.flow-columns > div:last-child { display: flex; flex-direction: column; align-items: flex-end; }
 .flow-label { display: block; margin-bottom: 8px; font-size: 10px; font-weight: 800; letter-spacing: .08em; }
 .spending-label { color: #a8473e; }.income-label { color: #39745d; }
-.flow-columns strong { display: block; overflow: hidden; color: var(--color-text-primary); font: 500 clamp(23px, 8vw, 35px) var(--font-mono); letter-spacing: -.06em; text-overflow: ellipsis; white-space: nowrap; }
+.flow-columns strong { display: block; min-width: 0; color: var(--color-text-primary); font: 500 35px var(--font-mono); letter-spacing: 0; white-space: nowrap; }
+.flow-columns > div:last-child strong { align-self: flex-end; text-align: right; }
 .net-balance { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-muted); font-size: 13px; }
-.net-balance strong { font: 500 15px var(--font-mono); }
+.net-balance strong { min-width: 0; font: 500 15px var(--font-mono); white-space: nowrap; text-align: right; }
 .home-dashboard .dashboard-section { margin-top: 28px; }
 .home-dashboard .section-title-row { margin-bottom: 12px; }
 .home-dashboard .section-title-row h3 { font-size: 20px; }

@@ -205,12 +205,16 @@ function MonthlyBarChart({
 function CategorySpendChart({
   category,
   transactions,
+  selectedSubcategory,
+  onSubcategorySelect,
 }: {
   category: string
   transactions: ReturnType<typeof getPeriodTransactions>
+  selectedSubcategory: string | null
+  onSubcategorySelect: (subcategory: string | null) => void
 }) {
   const totals = transactions
-    .filter((transaction) => transaction.type === 'expense' && transaction.category === category)
+    .filter((transaction) => transaction.type === 'expense' && (transaction.category.trim() || 'Uncategorized') === category)
     .reduce((result, transaction) => {
       const label = transaction.subcategory || 'Other'
       result.set(label, (result.get(label) || 0) + transaction.amount)
@@ -219,10 +223,14 @@ function CategorySpendChart({
   const entries = [...totals.entries()].sort((first, second) => second[1] - first[1])
   const maximum = Math.max(...entries.map((entry) => entry[1]), 1)
   const total = entries.reduce((sum, entry) => sum + entry[1], 0)
+  const selectedTransactions = selectedSubcategory
+    ? transactions.filter((transaction) => transaction.type === 'expense' && (transaction.category.trim() || 'Uncategorized') === category && (transaction.subcategory || 'Other') === selectedSubcategory)
+    : []
 
   return <div className="category-spend-detail">
     <div className="category-spend-heading"><div><span className="analysis-section-period">SELECTED CATEGORY</span><h4>{category}</h4></div><strong>{formatCurrency(total)}</strong></div>
-    {entries.length ? <div className="category-spend-chart">{entries.map(([label, amount]) => <div className="category-spend-bar-row" key={label}><div className="category-spend-bar-label"><span>{label}</span><strong>{formatCurrency(amount)}</strong></div><div className="category-spend-bar-track"><div className="category-spend-bar-fill" style={{ width: `${(amount / maximum) * 100}%` }} /></div></div>)}</div> : <div className="analysis-list-empty">No spending recorded for this category.</div>}
+    {entries.length ? <div className="category-spend-chart">{entries.map(([label, amount]) => <button className={`category-spend-bar-row ${selectedSubcategory === label ? 'selected' : ''}`} type="button" key={label} onClick={() => onSubcategorySelect(selectedSubcategory === label ? null : label)}><div className="category-spend-bar-label"><span>{label}</span><strong>{formatCurrency(amount)}</strong></div><div className="category-spend-bar-track"><div className="category-spend-bar-fill" style={{ width: `${(amount / maximum) * 100}%` }} /></div></button>)}</div> : <div className="analysis-list-empty">No spending recorded for this category.</div>}
+    {selectedSubcategory && <div className="subcategory-transactions-card"><div className="subcategory-transactions-heading"><div><span className="analysis-section-period">SELECTED SUBCATEGORY</span><h5>{selectedSubcategory}</h5></div><button className="subcategory-transactions-close" type="button" onClick={() => onSubcategorySelect(null)} aria-label="Close transaction details" title="Close transaction details"><X size={15} /></button></div><div className="subcategory-transactions-list">{selectedTransactions.map((transaction) => <div className="subcategory-transaction-row" key={transaction.id}><div><strong>{transaction.note || transaction.category}</strong><span>{transaction.date} · {transaction.time} · {transaction.paymentMode.replace('-', ' ')}</span></div><strong>{formatCurrency(transaction.amount)}</strong></div>)}</div></div>}
   </div>
 }
 
@@ -237,6 +245,7 @@ export function AnalysisPage() {
   const [period, setPeriod] =
     useState<AnalysisPeriod>('month')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
 
   const periodTransactions =
     useMemo(
@@ -427,15 +436,15 @@ export function AnalysisPage() {
           <div className="analysis-donut-area">
             <DonutChart categories={categoryTotals} />
             <div className="category-list">
-              {categoryTotals.slice(0, 5).map((category, index) => <button className={`category-row ${activeCategory === category.category ? 'selected' : ''}`} type="button" key={category.category} onClick={() => setSelectedCategory(activeCategory === category.category ? null : category.category)}><span className="category-name"><i className={`category-dot ${getCategoryClass(index)}`} />{category.category}</span><span className="category-values"><strong>{formatCurrency(category.amount)}</strong><small>{category.percentage.toFixed(1)}%</small></span></button>)}
+              {categoryTotals.slice(0, 5).map((category, index) => <button className={`category-row ${activeCategory === category.category ? 'selected' : ''}`} type="button" key={category.category} onClick={() => { setSelectedCategory(activeCategory === category.category ? null : category.category); setSelectedSubcategory(null) }}><span className="category-name"><i className={`category-dot ${getCategoryClass(index)}`} />{category.category}</span><span className="category-values"><strong>{formatCurrency(category.amount)}</strong><small>{category.percentage.toFixed(1)}%</small></span></button>)}
               {!categoryTotals.length && <div className="analysis-list-empty">Add expense transactions to see your category breakdown.</div>}
             </div>
           </div>
         </Card>
-        {activeCategory && <div className="category-spend-overlay" role="presentation" onClick={() => setSelectedCategory(null)}>
+        {activeCategory && <div className="category-spend-overlay" role="presentation" onClick={() => { setSelectedCategory(null); setSelectedSubcategory(null) }}>
           <div className="category-spend-modal" role="dialog" aria-modal="true" aria-label={`${activeCategory} spending details`} onClick={(event) => event.stopPropagation()}>
-            <button className="category-spend-close" type="button" onClick={() => setSelectedCategory(null)} aria-label="Close category details" title="Close category details"><X size={18} /></button>
-            <CategorySpendChart category={activeCategory} transactions={periodTransactions} />
+            <button className="category-spend-close" type="button" onClick={() => { setSelectedCategory(null); setSelectedSubcategory(null) }} aria-label="Close category details" title="Close category details"><X size={18} /></button>
+            <CategorySpendChart category={activeCategory} transactions={periodTransactions} selectedSubcategory={selectedSubcategory} onSubcategorySelect={setSelectedSubcategory} />
           </div>
         </div>}
       </section>
