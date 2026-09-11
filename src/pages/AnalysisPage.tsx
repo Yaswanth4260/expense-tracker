@@ -27,6 +27,7 @@ import {
 } from '../utils/analysisCalculations'
 
 import { formatCurrency } from '../utils/formatCurrency'
+import { formatTime } from '../utils/formatTime'
 
 const categoryClassNames = [
   'category-one',
@@ -35,6 +36,16 @@ const categoryClassNames = [
   'category-four',
   'category-five',
 ]
+
+const transactionDateFormatter = new Intl.DateTimeFormat('en-IN', {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
+})
+
+function formatTransactionDate(date: string) {
+  return transactionDateFormatter.format(new Date(`${date}T12:00:00`))
+}
 
 function getCategoryClass(index: number) {
   return (
@@ -230,7 +241,7 @@ function CategorySpendChart({
   return <div className="category-spend-detail">
     <div className="category-spend-heading"><div><span className="analysis-section-period">SELECTED CATEGORY</span><h4>{category}</h4></div><strong>{formatCurrency(total)}</strong></div>
     {entries.length ? <div className="category-spend-chart">{entries.map(([label, amount]) => <button className={`category-spend-bar-row ${selectedSubcategory === label ? 'selected' : ''}`} type="button" key={label} onClick={() => onSubcategorySelect(selectedSubcategory === label ? null : label)}><div className="category-spend-bar-label"><span>{label}</span><strong>{formatCurrency(amount)}</strong></div><div className="category-spend-bar-track"><div className="category-spend-bar-fill" style={{ width: `${(amount / maximum) * 100}%` }} /></div></button>)}</div> : <div className="analysis-list-empty">No spending recorded for this category.</div>}
-    {selectedSubcategory && <div className="subcategory-transactions-card"><div className="subcategory-transactions-heading"><div><span className="analysis-section-period">SELECTED SUBCATEGORY</span><h5>{selectedSubcategory}</h5></div><button className="subcategory-transactions-close" type="button" onClick={() => onSubcategorySelect(null)} aria-label="Close transaction details" title="Close transaction details"><X size={15} /></button></div><div className="subcategory-transactions-list">{selectedTransactions.map((transaction) => <div className="subcategory-transaction-row" key={transaction.id}><div><strong>{transaction.note || transaction.category}</strong><span>{transaction.date} · {transaction.time} · {transaction.paymentMode.replace('-', ' ')}</span></div><strong>{formatCurrency(transaction.amount)}</strong></div>)}</div></div>}
+    {selectedSubcategory && <div className="subcategory-transactions-card"><div className="subcategory-transactions-heading"><div><span className="analysis-section-period">SELECTED SUBCATEGORY</span><h5>{selectedSubcategory}</h5></div><button className="subcategory-transactions-close" type="button" onClick={() => onSubcategorySelect(null)} aria-label="Close transaction details" title="Close transaction details"><X size={15} /></button></div><div className="subcategory-transactions-list">{selectedTransactions.map((transaction) => <div className="subcategory-transaction-row" key={transaction.id}><div><span>{formatTransactionDate(transaction.date)}</span><span>{formatTime(transaction.time)}</span><span>{transaction.paymentMode.replace('-', ' ')}</span></div><strong>{formatCurrency(transaction.amount)}</strong></div>)}</div></div>}
   </div>
 }
 

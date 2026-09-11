@@ -498,9 +498,10 @@
 }
 
 .subcategory-transaction-row > div {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   min-width: 0;
-  gap: 3px;
+  gap: 3px 10px;
 }
 
 .subcategory-transaction-row span {
