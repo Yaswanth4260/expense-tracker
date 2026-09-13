@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useEffect, useState, type FormEvent } from 'react'
-import { ArrowLeft, Save, Trash2 } from 'lucide-react'
+import { ArrowLeft, Save, Trash2, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { getAccounts } from '../db/repositories/accountRepository'
 import { createTransaction, updateTransaction } from '../db/repositories/transactionRepository'
@@ -35,22 +35,24 @@ export function AddTransactionPage({ transaction, onSaved, onCancel, onDelete }:
   const [error, setError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
   const [categories, setCategories] = useState<string[]>([])
-  const [selectedCategory, setSelectedCategory] = useState(transaction?.category || '')
+  const [selectedCategory, setSelectedCategory] = useState(transaction?.category || 'Other')
   const [subcategories, setSubcategories] = useState<string[]>([])
-  const [selectedSubcategory, setSelectedSubcategory] = useState(transaction?.subcategory || '')
+  const [selectedSubcategory, setSelectedSubcategory] = useState(transaction?.subcategory || 'Other')
+  const [selectionSheet, setSelectionSheet] = useState<'category' | 'subcategory' | 'payment' | null>(null)
+  const [selectedPaymentMode, setSelectedPaymentMode] = useState<PaymentMode>(transaction?.paymentMode || 'cash')
   const isTransfer = transactionType === 'transfer'
 
   useEffect(() => {
     getCategories(transactionType).then((availableCategories) => {
       setCategories(availableCategories)
-      setSelectedCategory(transaction?.type === transactionType ? transaction.category : '')
+      setSelectedCategory(transaction?.type === transactionType ? transaction.category : 'Other')
     })
   }, [transactionType, transaction])
 
   useEffect(() => {
     getSubcategories(transactionType, selectedCategory).then((availableSubcategories) => {
       setSubcategories(availableSubcategories)
-      setSelectedSubcategory(transaction?.type === transactionType && transaction.category === selectedCategory ? transaction.subcategory || '' : '')
+      setSelectedSubcategory(transaction?.type === transactionType && transaction.category === selectedCategory ? transaction.subcategory || 'Other' : 'Other')
     })
   }, [transactionType, selectedCategory, transaction])
 
@@ -72,7 +74,7 @@ export function AddTransactionPage({ transaction, onSaved, onCancel, onDelete }:
     const paymentMode = String(data.get('paymentMode') || 'cash') as PaymentMode
 
     if (!Number.isFinite(amount) || amount <= 0) { setError('Enter an amount greater than zero.'); return }
-    if (!isTransfer && !category) { setError('Enter a category.'); return }
+    if (!isTransfer && !category) { setError('Choose a category.'); return }
     if (!Number.isInteger(accountId) || accountId <= 0) { setError(isTransfer ? 'Choose the account to transfer from.' : 'Choose an account.'); return }
     if (isTransfer && (toAccountId === undefined || !Number.isInteger(toAccountId) || toAccountId <= 0)) { setError('Choose the account to transfer to.'); return }
     if (isTransfer && accountId === toAccountId) { setError('Choose two different accounts for the transfer.'); return }
@@ -112,28 +114,34 @@ export function AddTransactionPage({ transaction, onSaved, onCancel, onDelete }:
   }
 
   return <section className="add-transaction-page">
-    <div className={`page-heading transaction-form-heading ${transaction ? 'edit-transaction-heading' : ''}`}><div>{transaction ? <button className="back-button" type="button" onClick={onCancel || (() => navigate('/transactions'))}><ArrowLeft size={18} /> Back</button> : <p className="eyebrow">NEW RECORD</p>}<h2>{transaction ? 'Edit transaction' : 'Add transaction'}</h2>{!transaction && <p>Record money in, money out, or a transfer.</p>}</div>{transaction ? <button className="delete-transaction-button" type="button" onClick={onDelete} aria-label="Delete transaction" title="Delete transaction"><Trash2 size={19} /></button> : <button className="text-button" type="button" onClick={onCancel || (() => navigate('/'))}>Cancel</button>}</div>
+    <header className={`transaction-form-heading ${transaction ? 'edit-transaction-heading' : ''}`}><button className="back-button" type="button" onClick={onCancel || (() => navigate(transaction ? '/transactions' : '/'))} aria-label="Go back"><ArrowLeft size={20} /></button><h2>{transaction ? 'Edit transaction' : 'Add Transaction'}</h2>{transaction ? <button className="delete-transaction-button" type="button" onClick={onDelete} aria-label="Delete transaction" title="Delete transaction"><Trash2 size={19} /></button> : <span className="transaction-header-spacer" aria-hidden="true" />}</header>
     <form className="transaction-form" onSubmit={submit} onKeyDown={preventImplicitSubmit} noValidate>
       <fieldset><legend>Transaction type</legend><div className="type-picker">{transactionTypes.map((type) => <button className={transactionType === type ? 'type-option selected' : 'type-option'} type="button" key={type} onClick={() => setTransactionType(type)}>{type[0].toUpperCase() + type.slice(1)}</button>)}</div></fieldset>
       <div className="form-row"><label>Date<input name="date" type="date" defaultValue={transaction?.date || localDate()} required /></label><label>Time<input name="time" type="time" defaultValue={transaction?.time || localTime()} required /></label></div>
-      <label>Amount<input name="amount" type="number" min="0.01" step="0.01" inputMode="decimal" defaultValue={transaction?.amount} placeholder="0.00" required /></label>
+      <label>Amount<input name="amount" type="number" min="0.01" step="0.01" inputMode="decimal" defaultValue={transaction?.amount} placeholder="0" required /></label>
       {transactionType === 'transfer' ? <>
         <label>From<select name="fromAccountId" defaultValue={transaction?.fromAccountId || transaction?.accountId || ''} required><option value="" disabled>{accounts?.length ? 'Choose account' : 'Loading accounts...'}</option>{accountOptions}</select></label>
         <label>To<select name="toAccountId" defaultValue={transaction?.toAccountId || ''} required><option value="" disabled>{accounts?.length ? 'Choose account' : 'Loading accounts...'}</option>{accountOptions}</select></label>
       </> : <>
-        <div className="category-field"><label>Category<select name="category" value={selectedCategory} onChange={(event) => setSelectedCategory(event.target.value)} required><option value="" disabled>Choose category</option>{categories.map((category) => <option value={category} key={category}>{category}</option>)}</select></label></div>
-        <div className="subcategory-field"><label>Subcategory <span className="optional">(optional)</span><select name="subcategory" value={selectedSubcategory} onChange={(event) => setSelectedSubcategory(event.target.value)} disabled={!selectedCategory}><option value="">No subcategory</option>{subcategories.map((subcategory) => <option value={subcategory} key={subcategory}>{subcategory}</option>)}</select></label></div>
-        <label>Payment mode<select name="paymentMode" defaultValue={transaction?.paymentMode || 'cash'}>{paymentModes.map((mode) => <option value={mode} key={mode}>{mode.replace('-', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase())}</option>)}</select></label>
+        <div className="category-field"><label>Category<button className="selection-trigger" type="button" onClick={() => setSelectionSheet('category')} aria-haspopup="dialog" aria-expanded={selectionSheet === 'category'}>{selectedCategory || 'Other'}</button><input name="category" type="hidden" value={selectedCategory || 'Other'} /></label></div>
+        <div className="subcategory-field"><label>Subcategory <span className="optional">(optional)</span><button className="selection-trigger" type="button" onClick={() => setSelectionSheet('subcategory')} aria-haspopup="dialog" aria-expanded={selectionSheet === 'subcategory'}>{selectedSubcategory || 'Other'}</button><input name="subcategory" type="hidden" value={selectedSubcategory || 'Other'} /></label></div>
+        <label>Payment mode<button className="selection-trigger" type="button" onClick={() => setSelectionSheet('payment')} aria-haspopup="dialog" aria-expanded={selectionSheet === 'payment'}>{selectedPaymentMode.replace('-', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase())}</button><input name="paymentMode" type="hidden" value={selectedPaymentMode} /></label>
       </>}
       <fieldset className="other-details"><legend>Other details</legend>
-        <label>Note<textarea name="note" rows={3} defaultValue={transaction?.note} placeholder="Add a note (optional)" /></label>
-        <label>Hashtags<input name="hashtags" defaultValue={transaction?.hashtags.join(' ')} placeholder="#work #travel (optional)" /></label>
-        <label>Attachment <span className="optional">(optional)</span><input type="file" onChange={selectAttachment} /></label>
+        <label>Note<textarea name="note" rows={3} defaultValue={transaction?.note} placeholder="Write a note" /></label>
+        <label>Hashtags<input name="hashtags" defaultValue={transaction?.hashtags.join(' ')} placeholder="Add tags" /></label>
+        <label>Add attachment <span className="optional">(optional)</span><input type="file" aria-label="Add attachment" onChange={selectAttachment} /></label>
         {attachment && <p className="attachment-name">Attached: {attachment.name}</p>}
       </fieldset>
       {error && <p className="form-error" role="alert">{error}</p>}
       <button className="save-transaction-button" type="submit" aria-label="Save transaction" title="Save transaction" disabled={isSaving || !accounts?.length}><Save size={20} aria-hidden="true" /></button>
     </form>
+    {selectionSheet && <div className="transaction-selection-backdrop" onClick={() => setSelectionSheet(null)} aria-hidden="true" />}
+    {selectionSheet && <div className="transaction-selection-sheet" role="dialog" aria-modal="true" aria-labelledby="transaction-selection-title">
+      <div className="transactions-sheet-handle" aria-hidden="true" />
+      <div className="transactions-sheet-header"><div><strong id="transaction-selection-title">Choose {selectionSheet === 'payment' ? 'payment mode' : selectionSheet}</strong><span>Select an option for this transaction.</span></div><button className="transactions-sheet-close" type="button" onClick={() => setSelectionSheet(null)} aria-label="Close selection"><X size={19} /></button></div>
+      <div className="transaction-selection-grid">{(selectionSheet === 'category' ? categories : selectionSheet === 'subcategory' ? ['Other', ...subcategories.filter((subcategory) => subcategory !== 'Other')] : paymentModes).map((option) => <button className={(selectionSheet === 'category' ? selectedCategory : selectionSheet === 'subcategory' ? selectedSubcategory : selectedPaymentMode) === option ? 'selected' : ''} type="button" key={option} onClick={() => { if (selectionSheet === 'category') { setSelectedCategory(option); setSelectedSubcategory('Other') } else if (selectionSheet === 'subcategory') setSelectedSubcategory(option); else setSelectedPaymentMode(option as PaymentMode); setSelectionSheet(null) }}>{option.replace('-', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase())}</button>)}</div>
+    </div>}
   </section>
 }
 
