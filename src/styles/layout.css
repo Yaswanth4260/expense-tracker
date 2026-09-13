@@ -113,9 +113,20 @@
 .transaction-form { display:grid; gap:18px; padding:4px 0 12px; }
 .transaction-form label, .transaction-form legend { display:grid; gap:8px; color:#1d1d1f; font-size:12px; font-weight:600; }
 .transaction-form fieldset { display:grid; gap:10px; margin:0; padding:0; border:0; }
+.visually-hidden { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0, 0, 0, 0); white-space:nowrap; border:0; }
 .transaction-form input, .transaction-form select, .transaction-form textarea { width:100%; padding:12px; border:1px solid #d9d9de; border-radius:11px; background:#fbfbfc; outline:0; font-size:14px; }
 .transaction-form input:focus, .transaction-form select:focus, .transaction-form textarea:focus { border-color:#007aff; box-shadow:0 0 0 3px rgba(0,122,255,.12); }
+.input-with-icon { position: relative; display: flex; align-items: center; min-width: 0; }
+.input-with-icon > svg { position: absolute; left: 12px; z-index: 1; flex: 0 0 auto; color: var(--color-text-secondary); pointer-events: none; }
+.input-with-icon > input, .input-with-icon > textarea, .input-with-icon > .selection-trigger { padding-left: 40px; }
+.input-with-icon-top { align-items: flex-start; }
+.input-with-icon-top > svg { top: 14px; }
+.currency-prefix { position: absolute; left: 13px; z-index: 1; color: var(--color-text-primary); font-size: 20px; pointer-events: none; }
+.currency-prefix + input { padding-left: 36px; }
 .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.transaction-category-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(16px, 3vw, 24px); width: 100%; }
+.transaction-category-row .category-field, .transaction-category-row .subcategory-field { min-width:0; width:100%; }
+.transaction-category-row .category-field > label, .transaction-category-row .subcategory-field > label, .transaction-category-row .input-with-icon, .transaction-category-row .selection-trigger { width:100%; min-width:0; }
 @media (max-width: 359px) {
   .form-row {
     grid-template-columns: 1fr;
@@ -148,6 +159,9 @@
 .transaction-selection-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; max-height: calc(min(78vh, 720px) - 155px); overflow-y: auto; padding: 16px 18px calc(20px + env(safe-area-inset-bottom)); }
 .transaction-selection-grid button { min-height: 54px; padding: 10px; color: var(--color-text-primary); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); cursor: pointer; font-size: 12px; font-weight: 700; }
 .transaction-selection-grid button:hover, .transaction-selection-grid button.selected { color: var(--color-accent); border-color: var(--color-accent); background: var(--color-accent-soft); }
+.attachment-picker { position: relative; display: flex; align-items: center; gap: 12px; min-height: 43px; padding: 12px 40px; color: var(--color-text-secondary); border: 1px solid #d9d9de; border-radius: 11px; background: #fbfbfc; cursor: pointer; font-size: 14px; font-weight: 400; }
+.attachment-picker svg { position: absolute; left: 12px; }
+.attachment-picker input { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; opacity: 0; cursor: pointer; }
 .save-transaction-button { position: fixed; right: max(20px, calc((100vw - 720px) / 2 + 20px)); bottom: calc(var(--navigation-height) + env(safe-area-inset-bottom) + 20px); z-index: 30; display: grid; place-items: center; width: 54px; height: 54px; margin: 2px auto 0; padding: 0; color: #fff; border: 0; border-radius: 16px; background: #007aff; box-shadow: 0 8px 24px rgba(0, 122, 255, .3); cursor: pointer; }
 .save-transaction-button:disabled { cursor: not-allowed; opacity: .55; }
 .transaction-form .primary-button { width:100%; border:0; }
